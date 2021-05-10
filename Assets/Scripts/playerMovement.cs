@@ -9,6 +9,7 @@ public class playerMovement : MonoBehaviour
     public float idletime;
     private Vector2 dir;
     private Animator animator;
+    public GameController gameController;
 
     private void Start()
     {
@@ -69,5 +70,13 @@ public class playerMovement : MonoBehaviour
         animator.SetFloat("xDir", dir.x);
         animator.SetFloat("yDir", dir.y);
         animator.SetFloat("IdleTimer", idletimer);
+    }
+
+    private void OnCollisionEnter2D(Collision2D col)
+    {
+        if (col.gameObject.name == "Portal")
+        {
+            gameController.NewMap();
+        }
     }
 }

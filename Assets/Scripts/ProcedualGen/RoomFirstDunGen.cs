@@ -20,12 +20,14 @@ public class RoomFirstDunGen : RandomWalkGen
     [SerializeField]
     private bool randomwalkRooms = false;
 
+    public Vector2Int StartingPos = Vector2Int.zero; 
+
     protected override void RunProcedualGeneration()
     {
         CreateRooms();
-    }
+    }   
 
-    private void CreateRooms()
+    public void CreateRooms()
     {
         var roomList = ProcedualGenAlgo.BinarySpacePartitioning(new BoundsInt((Vector3Int)startpos, new Vector3Int(dungeonWidth, dungeonHeight, 0)), minRoomWidth, minRoomHeight);
 
@@ -48,10 +50,62 @@ public class RoomFirstDunGen : RandomWalkGen
         }
 
         HashSet<Vector2Int> corridors = ConnectRooms(roomcenters);  //connect rooms using corridors
-        floor.UnionWith(corridors); 
+        floor.UnionWith(corridors);
 
-        tileMapVisualizer.PaintFloorTiles(floor);             //paint tiles 
-        WallGenerator.CreateWalls(floor, tileMapVisualizer);
+        StartingPos = FindStartingPos(floor);
+        print(StartingPos);
+
+        tileMapVisualizer.PaintFloorTiles(floor);             //paint floor
+        WallGenerator.CreateWalls(floor, tileMapVisualizer);  //paint wall
+        CreateEndingPos(floor);  //paint portal
+    }
+
+    private Vector2Int FindStartingPos(HashSet<Vector2Int> floor)
+    {
+        Vector2Int closest = Vector2Int.zero;
+
+        int i = Random.Range(0, 10);
+        foreach (var floorpos in floor)  //loop to find closest
+        {
+            if (i < 5)
+            {
+                float dist = float.MaxValue;
+                float currdist = Vector2.Distance(floorpos, Vector2Int.zero);
+                if (currdist < dist)
+                {
+                    dist = currdist;
+                    closest = floorpos;
+                }
+            }
+            else
+            {
+                float dist = float.MinValue;
+                float currdist = Vector2.Distance(floorpos, Vector2Int.zero);
+                if (currdist > dist)
+                {
+                    dist = currdist;
+                    closest = floorpos;
+                }
+            }
+        }
+        return closest;
+    }
+
+    private void CreateEndingPos(HashSet<Vector2Int> floor)
+    {
+        Vector2Int furthest = Vector2Int.zero;
+        float dist = float.MinValue;
+
+        foreach (var floorpos in floor)  //loop to find closest
+        {
+            float currdist = Vector2.Distance(floorpos, StartingPos);
+            if (currdist > dist)
+            {
+                dist = currdist;
+                furthest = floorpos;
+            }
+        }
+        tileMapVisualizer.PaintSinglePortalTile(furthest);
     }
 
     private HashSet<Vector2Int> CreateRoomsUsingRandomWalk(List<BoundsInt> roomList)
