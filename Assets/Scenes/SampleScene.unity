@@ -28526,7 +28526,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8646463704980384590, guid: 743632c28b89ba94b80f62be4460e6e9, type: 3}
       propertyPath: attackrange
-      value: 2.5
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 8646463704980384590, guid: 743632c28b89ba94b80f62be4460e6e9, type: 3}
       propertyPath: attackcooldown
