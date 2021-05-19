@@ -11,6 +11,8 @@ public class playerMovement : MonoBehaviour
 
     public float speed;
     public float idletime;
+    public float attackrange;
+    public float attackcooldown;
     private Vector2 dir;
     private Vector3 movedir;
     private Animator animator;
@@ -21,6 +23,9 @@ public class playerMovement : MonoBehaviour
     public float dashcooldown;
 
     bool isDashButtonDown = false;
+
+    EnemyManager m_EnemyManager = EnemyManager.Singleton;
+
 
     private void Awake()
     {
@@ -85,11 +90,37 @@ public class playerMovement : MonoBehaviour
                 dashcooldown = 7f;
             }
         }
+
+        if (Input.GetMouseButtonDown(0) && attackcooldown < 0) //Melee Attack
+        {
+            Vector3 Mousepos = GetMouseWorldPos();
+            Vector3 Mousedir = (Mousepos - transform.position).normalized;
+            float atkoffset = 3f;
+            Vector3 atkPos = transform.position + movedir * atkoffset;
+            EnemyController targetenemy = EnemyManager.Singleton.GetClosestEnemy(atkPos, attackrange);
+            if(targetenemy != null)
+            {
+                //Damage Enemy
+                //Debug.Log("damaged enemy");
+                targetenemy.GetComponent<Health>().DealDmg(20);
+            }
+            movedir = Vector3.zero;
+            animator.SetTrigger("AttackTrigger");
+            attackcooldown = 3f;
+        }
     }   
+
+    public static Vector3 GetMouseWorldPos()
+    {
+        Vector3 vec = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        vec.z = 0f;
+        return vec;
+    }
 
     private void FixedUpdate()
     {
         dashcooldown -= 0.1f;
+        attackcooldown -= 0.1f;
         rigidbody2D.velocity = movedir * speed;
 
         if(isDashButtonDown)

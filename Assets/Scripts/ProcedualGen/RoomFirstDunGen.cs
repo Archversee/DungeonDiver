@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using UnityEngine.AI;
 
 public class RoomFirstDunGen : RandomWalkGen
 {
@@ -19,6 +21,13 @@ public class RoomFirstDunGen : RandomWalkGen
 
     [SerializeField]
     private bool randomwalkRooms = false;
+
+    //Enemies
+    [SerializeField]
+    private GameObject BasicEnemy;
+
+   // public NavMeshSurface2d navMeshSurfaces;
+
 
     public Vector2Int StartingPos = Vector2Int.zero; 
 
@@ -42,7 +51,6 @@ public class RoomFirstDunGen : RandomWalkGen
             floor = CreateSimpleRooms(roomList);                  //create rooms using BSP
         }
 
-
         List<Vector2Int> roomcenters = new List<Vector2Int>();
         foreach (var room in roomList)
         {
@@ -53,11 +61,23 @@ public class RoomFirstDunGen : RandomWalkGen
         floor.UnionWith(corridors);
 
         StartingPos = FindStartingPos(floor);
-        print(StartingPos);
+        //print(StartingPos);
 
         tileMapVisualizer.PaintFloorTiles(floor);             //paint floor
         WallGenerator.CreateWalls(floor, tileMapVisualizer);  //paint wall
         CreateEndingPos(floor);  //paint portal
+    }
+
+    private void SpawnEnemy(HashSet<Vector2Int> floor)
+    {
+        int EnemyCounterLimit = floor.Count / 50; //for each 25 tiles we allow 1 enemy to spawn
+
+        List<Vector2Int> enemiestoSpawn = floor.OrderBy(x => Guid.NewGuid()).Take(EnemyCounterLimit).ToList();  //sort by random order,then take the number we need
+
+        foreach (var Pos in enemiestoSpawn)
+        {
+            Instantiate(BasicEnemy, new Vector3(Pos.x, Pos.y, 0), Quaternion.identity);
+        }
     }
 
     private Vector2Int FindStartingPos(HashSet<Vector2Int> floor)
@@ -111,6 +131,7 @@ public class RoomFirstDunGen : RandomWalkGen
     private HashSet<Vector2Int> CreateRoomsUsingRandomWalk(List<BoundsInt> roomList)
     {
         HashSet<Vector2Int> floor = new HashSet<Vector2Int>();
+        HashSet<Vector2Int> tempfloor = new HashSet<Vector2Int>();
         for (int i = 0; i < roomList.Count; i++)
         {
             var roomBounds = roomList[i];
@@ -119,10 +140,15 @@ public class RoomFirstDunGen : RandomWalkGen
 
             foreach (var pos in roomFloor)
             {
+                tempfloor.Clear();
                 if(pos.x >= (roomBounds.xMin + offset) && pos.x <= (roomBounds.xMax - offset) && pos.y >= (roomBounds.yMin - offset) && pos.y <= (roomBounds.yMax - offset))
                 {
                     floor.Add(pos);  //if the floor is within the room bounds size then add it
+                    tempfloor.Add(pos);
                 }
+
+                //navMeshSurfaces.UpdateNavMesh(navMeshSurfaces.navMeshData);
+                SpawnEnemy(tempfloor);
             }
 
         }
@@ -200,17 +226,23 @@ public class RoomFirstDunGen : RandomWalkGen
     private HashSet<Vector2Int> CreateSimpleRooms(List<BoundsInt> roomList)
     {
         HashSet<Vector2Int> floor = new HashSet<Vector2Int>();
+        HashSet<Vector2Int> tempfloor = new HashSet<Vector2Int>();
 
         foreach (var room in roomList)   //for each room
         {
+            tempfloor.Clear();
             for (int col = offset; col < room.size.x - offset; col++) //offset so rooms dont connect
             {
                 for (int row = offset; row < room.size.y - offset; row++)
                 {
                     Vector2Int pos = (Vector2Int)room.min + new Vector2Int(col, row); //add floorpos into floor hashset
                     floor.Add(pos);
+                    tempfloor.Add(pos);
                 }
             }
+
+            //navMeshSurfaces.UpdateNavMesh(navMeshSurfaces.navMeshData);
+            SpawnEnemy(tempfloor);
         }
         return floor;
     }

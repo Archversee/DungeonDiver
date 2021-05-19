@@ -143,8 +143,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82620f18b4ecec14e98a497cb98798c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dashLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
   speed: 3
   idletime: 0
+  attackrange: 5
+  attackcooldown: 2
+  gameController: {fileID: 0}
+  dashrange: 0
+  dashcooldown: 0
 --- !u!50 &8646463704980384584
 Rigidbody2D:
   serializedVersion: 4
