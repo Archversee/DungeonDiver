@@ -222,6 +222,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Targetrange: 8
+  Attackrange: 2
+  Attackdmg: 5
+  AttackDelay: 3
 --- !u!114 &-3147238103445942086
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -234,6 +237,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf3f3526ef84be041a29977558290dfd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  istodestroy: 0
+  gameController: {fileID: 0}
+  coinLootDrop: {fileID: 490834671063091604, guid: e6acb5a518baa4542a4c59a148cfd2fb, type: 3}
+  diamondLootDrop: {fileID: 5407887656678771996, guid: df6dfe6e1c5f9c541a545acb299a8c0b, type: 3}
 --- !u!114 &-5995026798694429017
 MonoBehaviour:
   m_ObjectHideFlags: 0

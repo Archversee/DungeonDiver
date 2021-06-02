@@ -3,18 +3,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using Random = UnityEngine.Random;
 
 public class TileMapVisualizer : MonoBehaviour
 {
     [SerializeField]
-    private Tilemap floortilemap , walltilemap, portaltilemap;
+    private Tilemap floortilemap , walltilemap, portaltilemap , shoptilemap, bonestilemap;
         
     [SerializeField]
-    private TileBase floortile , wallTop , portalTile;
+    private TileBase floortile , wallTop , portalTile, shopTile, bonesTile, bonesTile2;
 
     public void PaintFloorTiles(IEnumerable<Vector2Int> floorpos)
     {
         PaintTiles(floorpos, floortilemap, floortile);
+    }
+    public void PaintBoneTiles(IEnumerable<Vector2Int> bonepos)
+    {
+        PaintMultipleTiles(bonepos, bonestilemap, bonesTile, bonesTile2);
     }
 
     public void PaintSinglePortalTile(Vector2Int pos)
@@ -22,11 +27,32 @@ public class TileMapVisualizer : MonoBehaviour
         PaintSingleTile(portaltilemap, portalTile, pos);
     }
 
+    public void PaintSingleShopTile(Vector2Int pos)
+    {
+        PaintSingleTile(shoptilemap, shopTile, pos);
+    }
+
     private void PaintTiles(IEnumerable<Vector2Int> pos, Tilemap tilemap, TileBase tile)
     {
         foreach (var position in pos)
         {
             PaintSingleTile(tilemap, tile, position);
+        }
+    }
+
+    private void PaintMultipleTiles(IEnumerable<Vector2Int> pos, Tilemap tilemap, TileBase tile, TileBase tile2)
+    {
+        foreach (var position in pos)
+        {
+            int randomnum = Random.Range(0, 10);
+            if(randomnum > 5)
+            {
+               PaintSingleTile(tilemap, tile, position);
+            }
+            else
+            {
+                PaintSingleTile(tilemap, tile2, position);
+            }
         }
     }
 
@@ -46,5 +72,7 @@ public class TileMapVisualizer : MonoBehaviour
         floortilemap.ClearAllTiles();
         walltilemap.ClearAllTiles();
         portaltilemap.ClearAllTiles();
+        shoptilemap.ClearAllTiles();
+        bonestilemap.ClearAllTiles();
     }
 }

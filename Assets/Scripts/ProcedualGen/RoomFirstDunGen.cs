@@ -25,9 +25,12 @@ public class RoomFirstDunGen : RandomWalkGen
     //Enemies
     [SerializeField]
     private GameObject BasicEnemy;
+    public GameObject HealthPot;
+    public GameObject TreasureChest;
 
-   // public NavMeshSurface2d navMeshSurfaces;
+    // public NavMeshSurface2d navMeshSurfaces;
 
+    ConsumableManager m_consumableManager = ConsumableManager.Singleton;
 
     public Vector2Int StartingPos = Vector2Int.zero; 
 
@@ -61,6 +64,7 @@ public class RoomFirstDunGen : RandomWalkGen
         floor.UnionWith(corridors);
 
         StartingPos = FindStartingPos(floor);
+        CreateAesthetics(floor);
         //print(StartingPos);
 
         tileMapVisualizer.PaintFloorTiles(floor);             //paint floor
@@ -70,13 +74,38 @@ public class RoomFirstDunGen : RandomWalkGen
 
     private void SpawnEnemy(HashSet<Vector2Int> floor)
     {
-        int EnemyCounterLimit = floor.Count / 50; //for each 25 tiles we allow 1 enemy to spawn
+        int EnemyCounterLimit = floor.Count / 50; //for each 50 tiles we allow 1 enemy to spawn
 
         List<Vector2Int> enemiestoSpawn = floor.OrderBy(x => Guid.NewGuid()).Take(EnemyCounterLimit).ToList();  //sort by random order,then take the number we need
 
         foreach (var Pos in enemiestoSpawn)
         {
             Instantiate(BasicEnemy, new Vector3(Pos.x, Pos.y, 0), Quaternion.identity);
+        }
+    }
+
+    private void SpawnConsumables(HashSet<Vector2Int> floor)
+    {
+        int HealthCounterLimit = floor.Count / 100; //for each 50 tiles we allow 1 enemy to spawn
+        int ChestCounterLimit = floor.Count / 140; //for each 50 tiles we allow 1 enemy to spawn
+
+        List<Vector2Int> HealthPotstoSpawn = floor.OrderBy(x => Guid.NewGuid()).Take(HealthCounterLimit).ToList();  //sort by random order,then take the number we need
+        List<Vector2Int> ChesttoSpawn = floor.OrderBy(x => Guid.NewGuid()).Take(ChestCounterLimit).ToList();  //sort by random order,then take the number we need
+        float offset = 0.5f;
+
+        foreach (var Pos in HealthPotstoSpawn)
+        {
+            Instantiate(HealthPot, new Vector3(Pos.x + offset, Pos.y + offset, 0), Quaternion.identity);
+            //m_consumableManager.RegisterConsumable(healthp);
+        }
+        foreach (var Pos in ChesttoSpawn)
+        {
+            float randnum = Random.Range(0, 1);
+            if (randnum < 0.3)
+            {
+                Instantiate(TreasureChest, new Vector3(Pos.x + offset, Pos.y + offset, 0), Quaternion.identity);
+                //m_consumableManager.RegisterConsumable(treasurec);
+            }
         }
     }
 
@@ -127,6 +156,27 @@ public class RoomFirstDunGen : RandomWalkGen
         }
         tileMapVisualizer.PaintSinglePortalTile(furthest);
     }
+    private void CreateAesthetics(HashSet<Vector2Int> floor)
+    {
+        HashSet<Vector2Int> bones = new HashSet<Vector2Int>();
+        int NumberB4nextBone = 0;
+
+        foreach (var floorpos in floor)  
+        {
+            NumberB4nextBone++;
+            if (NumberB4nextBone > 50)
+            {
+                int randnum = Random.Range(0, 10);
+                if(randnum > 5)
+                {
+                    bones.Add(floorpos);
+                    NumberB4nextBone = 0;
+                }
+            }
+        }
+        tileMapVisualizer.PaintBoneTiles(bones);
+    }
+
 
     private HashSet<Vector2Int> CreateRoomsUsingRandomWalk(List<BoundsInt> roomList)
     {
@@ -174,9 +224,16 @@ public class RoomFirstDunGen : RandomWalkGen
 
     private HashSet<Vector2Int> CreateCorridor(Vector2Int currRoomCenter, Vector2Int dest)
     {
+        float randnum = Random.Range(0f, 10f);
+        bool widecorridors = false;
         HashSet<Vector2Int> corridor = new HashSet<Vector2Int>();
         var pos = currRoomCenter;
         corridor.Add(pos);
+
+        if(randnum >= 5)
+        {
+            widecorridors = true;
+        }
 
         while (pos.y != dest.y)  //while not at same y coord
         {
@@ -189,6 +246,11 @@ public class RoomFirstDunGen : RandomWalkGen
                 pos += Vector2Int.down;//go DOWN
             }
             corridor.Add(pos);
+            if (widecorridors)
+            {
+                corridor.Add(pos + Vector2Int.right);
+                corridor.Add(pos + Vector2Int.left);
+            }
         }
         while (pos.x != dest.x)//while not at same x coord
         {
@@ -201,6 +263,11 @@ public class RoomFirstDunGen : RandomWalkGen
                 pos += Vector2Int.left; //go LEFT
             }
             corridor.Add(pos);
+            if (widecorridors)
+            {
+                corridor.Add(pos + Vector2Int.up);
+                corridor.Add(pos + Vector2Int.down);
+            }
         }
 
         return corridor;
@@ -243,6 +310,7 @@ public class RoomFirstDunGen : RandomWalkGen
 
             //navMeshSurfaces.UpdateNavMesh(navMeshSurfaces.navMeshData);
             SpawnEnemy(tempfloor);
+            SpawnConsumables(tempfloor);
         }
         return floor;
     }

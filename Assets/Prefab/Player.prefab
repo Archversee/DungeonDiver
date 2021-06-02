@@ -14,6 +14,9 @@ GameObject:
   - component: {fileID: 8646463704980384585}
   - component: {fileID: 8646463704980384590}
   - component: {fileID: 8646463704980384584}
+  - component: {fileID: 7909493268685852654}
+  - component: {fileID: 5083941555685538611}
+  - component: {fileID: 1560471043152312160}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -148,11 +151,13 @@ MonoBehaviour:
     m_Bits: 0
   speed: 3
   idletime: 0
-  attackrange: 5
+  attackrange: 1.5
   attackcooldown: 2
   gameController: {fileID: 0}
   dashrange: 0
   dashcooldown: 0
+  Coins: 0
+  CurrencyValue: {fileID: 0}
 --- !u!50 &8646463704980384584
 Rigidbody2D:
   serializedVersion: 4
@@ -174,3 +179,45 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!114 &7909493268685852654
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8646463704980384594}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc94f05996ecd7c49a3ecadbe1ab673f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxhealth: 100
+  currhealth: 100
+--- !u!114 &5083941555685538611
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8646463704980384594}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ac20548a42ab8e4aa3868d023f95ef5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  foregroundImage: {fileID: 0}
+  updateSpeedSeconds: 0.5
+--- !u!114 &1560471043152312160
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8646463704980384594}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e8b54e7c9f3c6f42b93f18ebedb4947, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OpenedFullTreasureChest: {fileID: 6537843316421574175, guid: 1825a7d5edee11148b6b0ed76f972e60, type: 3}
+  OpenedEmptyTreasureChest: {fileID: 6537843316421574175, guid: 11c30715fa849b74c97f80d480e940ac, type: 3}

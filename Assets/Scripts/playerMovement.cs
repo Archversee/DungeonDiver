@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class playerMovement : MonoBehaviour
 {
@@ -21,6 +22,11 @@ public class playerMovement : MonoBehaviour
 
     public float dashrange;
     public float dashcooldown;
+
+    public int Coins;
+
+    //UI
+    public Text CurrencyValue;
 
     bool isDashButtonDown = false;
 
@@ -95,8 +101,8 @@ public class playerMovement : MonoBehaviour
         {
             Vector3 Mousepos = GetMouseWorldPos();
             Vector3 Mousedir = (Mousepos - transform.position).normalized;
-            float atkoffset = 3f;
-            Vector3 atkPos = transform.position + movedir * atkoffset;
+            //float atkoffset = 1.5f;
+            Vector3 atkPos = transform.position + Mousedir * attackrange;
             EnemyController targetenemy = EnemyManager.Singleton.GetClosestEnemy(atkPos, attackrange);
             if(targetenemy != null)
             {
@@ -152,5 +158,11 @@ public class playerMovement : MonoBehaviour
         {
             gameController.NewMap();
         }
+    }
+
+    public void AddCurrency(int amt)
+    {
+        Coins += amt;
+        CurrencyValue.text = "Gold: " + Coins.ToString();
     }
 }

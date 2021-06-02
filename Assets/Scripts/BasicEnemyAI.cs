@@ -14,8 +14,13 @@ public class BasicEnemyAI : MonoBehaviour
 
     [SerializeField]
     float Targetrange = 5f;
-    //[SerializeField]
-    //float Attackrange = 3f;
+    [SerializeField]
+    float Attackrange = 2f;
+    [SerializeField]
+    int Attackdmg = 5;
+    [SerializeField]
+    float AttackDelay = 3f;
+    float LastAttackTime = 0f;
 
     //States
     private enum State
@@ -59,15 +64,33 @@ public class BasicEnemyAI : MonoBehaviour
                 break;
             case State.Chase:
                 agent.SetDestination(player.position);
-                /*      if (Vector3.Distance(transform.position, player.position) < Attackrange)
-                      {
-                          //if player wihtin attack range
-                          state = State.Attack;
-                      }*/
-                if (Vector3.Distance(transform.position, player.position) > Targetrange)  //if reached roam pos
+                if (Vector3.Distance(transform.position, player.position) < Attackrange)
+                {
+                    //if player wihtin attack range
+                    state = State.Attack;
+                    agent.isStopped = true;
+                    sprite.color = Color.red;
+                }
+                if (Vector3.Distance(transform.position, player.position) > Targetrange) 
                 {
                     state = State.ReturnToStart;
                     sprite.color = new Color(1, 1, 1, 1);
+                }
+                break;
+            case State.Attack:
+                if (Vector3.Distance(transform.position, player.position) > Attackrange)
+                {
+                    state = State.Chase;
+                    sprite.color = Color.yellow;
+                    agent.isStopped = false;
+                }
+                if (Time.time > LastAttackTime + 0.1 && sprite.color == Color.green) // 
+                {
+                    sprite.color = Color.red;
+                }
+                if (Time.time > LastAttackTime + AttackDelay) // 
+                {
+                    AttackPlayer();
                 }
                 break;
             case State.ReturnToStart:
@@ -82,9 +105,18 @@ public class BasicEnemyAI : MonoBehaviour
         }
     }
 
+    public void AttackPlayer()
+    {
+        LastAttackTime = Time.time;
+        player.GetComponent<Health>().DealDmg(Attackdmg);
+        sprite.color = Color.green;
+    }
+
     private Vector3 GetRoamingpos()
     {
-        return startpos + GetRandomDir() * Random.Range(5f, 15f);
+        Vector3 roampos = startpos + GetRandomDir() * Random.Range(5f, 15f);
+
+        return roampos;
     }
 
     public static Vector3 GetRandomDir()
@@ -98,7 +130,7 @@ public class BasicEnemyAI : MonoBehaviour
         {
             //if player wihtin target range
             state = State.Chase;
-            sprite.color = new Color(1, 0, 0, 1);
+            sprite.color = Color.yellow;
         }
     }
 }

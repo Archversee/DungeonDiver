@@ -29,7 +29,7 @@ public sealed class EnemyManager
     {
         for (int i = 0; i < Enemies.Count; i++)
         {
-            enemies[i].GetComponent<Health>().currhealth = 0;
+            enemies[i].istodestroy = true;
         }
     }
 
@@ -58,7 +58,6 @@ public sealed class EnemyManager
             {
                 continue;
             }
-
             if(closestEnemy == null)
             {
                 closestEnemy = TempEnemy;
@@ -70,6 +69,7 @@ public sealed class EnemyManager
                     closestEnemy = TempEnemy;
                 }
             }
+
         }
         return closestEnemy;
     }
