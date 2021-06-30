@@ -8,10 +8,10 @@ using Random = UnityEngine.Random;
 public class TileMapVisualizer : MonoBehaviour
 {
     [SerializeField]
-    private Tilemap floortilemap , walltilemap, portaltilemap , shoptilemap, bonestilemap;
+    private Tilemap floortilemap , walltilemap, portaltilemap , shoptilemap, bonestilemap, lavatilemap, mudtilemap;
         
     [SerializeField]
-    private TileBase floortile , wallTop , portalTile, shopTile, bonesTile, bonesTile2;
+    private TileBase floortile , wallTop , portalTile, shopTile, bonesTile, bonesTile2, lavaTile , mudTile;
 
     public void PaintFloorTiles(IEnumerable<Vector2Int> floorpos)
     {
@@ -20,6 +20,16 @@ public class TileMapVisualizer : MonoBehaviour
     public void PaintBoneTiles(IEnumerable<Vector2Int> bonepos)
     {
         PaintMultipleTiles(bonepos, bonestilemap, bonesTile, bonesTile2);
+    }
+
+    public void PaintLavaTiles(IEnumerable<Vector2Int> lavapos)
+    {
+        PaintTiles(lavapos, lavatilemap, lavaTile);
+    }
+
+    public void PaintMudTiles(IEnumerable<Vector2Int> mudpos)
+    {
+        PaintTiles(mudpos, mudtilemap, mudTile);
     }
 
     public void PaintSinglePortalTile(Vector2Int pos)
@@ -74,5 +84,7 @@ public class TileMapVisualizer : MonoBehaviour
         portaltilemap.ClearAllTiles();
         shoptilemap.ClearAllTiles();
         bonestilemap.ClearAllTiles();
+        lavatilemap.ClearAllTiles();
+        mudtilemap.ClearAllTiles();
     }
 }

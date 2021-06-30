@@ -26,6 +26,7 @@ public class BasicEnemyAI : MonoBehaviour
     private enum State
     {
         Roaming,
+        Idle,
         Chase,
         Attack,
         ReturnToStart,
@@ -60,6 +61,9 @@ public class BasicEnemyAI : MonoBehaviour
                 {
                     roampos = GetRoamingpos();
                 }
+                FindTarget();
+                break;
+            case State.Idle:
                 FindTarget();
                 break;
             case State.Chase:
@@ -108,7 +112,7 @@ public class BasicEnemyAI : MonoBehaviour
     public void AttackPlayer()
     {
         LastAttackTime = Time.time;
-        player.GetComponent<Health>().DealDmg(Attackdmg);
+        player.GetComponent<playerMovement>().TakeDamage(Attackdmg);
         sprite.color = Color.green;
     }
 

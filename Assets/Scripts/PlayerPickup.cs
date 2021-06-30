@@ -9,6 +9,12 @@ public class PlayerPickup : MonoBehaviour
     public GameObject OpenedFullTreasureChest;
     public GameObject OpenedEmptyTreasureChest;
 
+    [SerializeField]
+    private Transform DamagePopup;
+
+    float LastBurnTime = 0f;
+    int burnDmg = 2;
+    float burnDelay = 3f;
 
     ConsumableManager m_consumableManager = ConsumableManager.Singleton;
     void OnTriggerEnter2D(Collider2D other)
@@ -30,13 +36,16 @@ public class PlayerPickup : MonoBehaviour
             if (other.name == "HealthPot(Clone)")
             {
                 GetComponent<Health>().Heal(50);
+                Transform healPopupTransform = Instantiate(DamagePopup, transform.position, Quaternion.identity);
+                DamagePopup healPopup = healPopupTransform.GetComponent<DamagePopup>();
+                healPopup.HealSetup(50);
             }
             if (other.name == "TreasureChest(Clone)")
             {
                 int randnum = Random.Range(0, 10);
-                if (randnum < 5)
+                if (randnum > 6)
                 {
-                    GetComponent<playerMovement>().AddCurrency(50);
+                    GetComponent<playerMovement>().AddCurrency(15);
                     Instantiate(OpenedFullTreasureChest, new Vector3(other.transform.position.x, other.transform.position.y, 0), Quaternion.identity);
                 }
                 else
@@ -46,6 +55,32 @@ public class PlayerPickup : MonoBehaviour
             }
             m_consumableManager.UnregisterConsumable(other.gameObject);
             Destroy(other.gameObject);
+        }
+        else if (other.CompareTag("Environment"))
+        {
+            if (other.name == "Lava")
+            {
+                GetComponent<playerMovement>().CollidingwithLava = true;
+            }
+            if (other.name == "Mud")
+            {
+                GetComponent<playerMovement>().CollidingwithMud = true;
+            }
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.CompareTag("Environment"))
+        {
+            if (other.name == "Lava")
+            {
+                GetComponent<playerMovement>().CollidingwithLava = false;
+            }
+            if (other.name == "Mud")
+            {
+                GetComponent<playerMovement>().CollidingwithMud = false;
+            }
         }
     }
 }

@@ -86,8 +86,8 @@ public class RoomFirstDunGen : RandomWalkGen
 
     private void SpawnConsumables(HashSet<Vector2Int> floor)
     {
-        int HealthCounterLimit = floor.Count / 100; //for each 50 tiles we allow 1 enemy to spawn
-        int ChestCounterLimit = floor.Count / 140; //for each 50 tiles we allow 1 enemy to spawn
+        int HealthCounterLimit = floor.Count / 140; //for each 140 tiles we allow 1 enemy to spawn
+        int ChestCounterLimit = floor.Count / 180; //for each 180 tiles we allow 1 enemy to spawn
 
         List<Vector2Int> HealthPotstoSpawn = floor.OrderBy(x => Guid.NewGuid()).Take(HealthCounterLimit).ToList();  //sort by random order,then take the number we need
         List<Vector2Int> ChesttoSpawn = floor.OrderBy(x => Guid.NewGuid()).Take(ChestCounterLimit).ToList();  //sort by random order,then take the number we need
@@ -295,6 +295,9 @@ public class RoomFirstDunGen : RandomWalkGen
         HashSet<Vector2Int> floor = new HashSet<Vector2Int>();
         HashSet<Vector2Int> tempfloor = new HashSet<Vector2Int>();
 
+        int shoproomint = Random.Range(0, roomList.Count);
+        //Debug.Log(shoproomint);
+
         foreach (var room in roomList)   //for each room
         {
             tempfloor.Clear();
@@ -308,10 +311,88 @@ public class RoomFirstDunGen : RandomWalkGen
                 }
             }
 
-            //navMeshSurfaces.UpdateNavMesh(navMeshSurfaces.navMeshData);
-            SpawnEnemy(tempfloor);
-            SpawnConsumables(tempfloor);
+            if(room == roomList[shoproomint]) //if room designated to be shop
+            {
+                tileMapVisualizer.PaintSingleShopTile((Vector2Int)Vector3Int.RoundToInt(room.center));
+            }
+            else
+            {
+                int randnum = Random.Range(0, 100);
+                if (randnum >= 70) //30% chance for special room
+                {
+                    if (randnum >= 70 && randnum < 80) // 10% for treasure room (no enemies only chest)
+                    {
+                        SpawnTreasureRoom(room);
+                    }
+                    else if(randnum >= 80 && randnum < 90) // 10% for lava room (lava burns player)
+                    {
+                        SpawnLavaRoom(tempfloor);
+                    }
+                    else if (randnum >= 90) // 10% for Mud room (Mud slows player)
+                    {
+                        SpawnMudRoom(tempfloor);
+                        SpawnEnemy(tempfloor);
+                    }
+                    SpawnConsumables(tempfloor);
+                }
+                else //normal room
+                {
+                    //navMeshSurfaces.UpdateNavMesh(navMeshSurfaces.navMeshData);
+                    SpawnEnemy(tempfloor);
+                    SpawnConsumables(tempfloor);
+                }
+            }
         }
         return floor;
+    }
+
+    private void SpawnMudRoom(HashSet<Vector2Int> floor)
+    {
+        int MudCounterLimit = floor.Count / 2; //for each 5 tiles we allow 1 lava to spawn
+
+        List<Vector2Int> MudtoSpawn = floor.OrderBy(x => Guid.NewGuid()).Take(MudCounterLimit).ToList();  //sort by random order,then take the number we need
+
+        HashSet<Vector2Int> mud = new HashSet<Vector2Int>();
+        foreach (var Pos in MudtoSpawn)
+        {
+            mud.Add(Pos);
+        }
+        tileMapVisualizer.PaintMudTiles(mud);
+    }
+
+    private void SpawnLavaRoom(HashSet<Vector2Int> floor)
+    {
+        int LavaCounterLimit = floor.Count / 5; //for each 5 tiles we allow 1 lava to spawn
+
+        List<Vector2Int> LavatoSpawn = floor.OrderBy(x => Guid.NewGuid()).Take(LavaCounterLimit).ToList();  //sort by random order,then take the number we need
+        
+        HashSet<Vector2Int> lava = new HashSet<Vector2Int>();
+        foreach (var Pos in LavatoSpawn)
+        {
+            lava.Add(Pos);
+        }
+        tileMapVisualizer.PaintLavaTiles(lava);
+    }
+
+    private void SpawnTreasureRoom(BoundsInt room)
+    {
+
+        List<Vector2Int> ChesttoSpawn = new List<Vector2Int>();
+
+        ChesttoSpawn.Add((Vector2Int)Vector3Int.RoundToInt(room.center));
+        ChesttoSpawn.Add((Vector2Int)Vector3Int.RoundToInt(new Vector3(room.center.x + 1, room.center.y, 0)));
+        ChesttoSpawn.Add((Vector2Int)Vector3Int.RoundToInt(new Vector3(room.center.x - 1, room.center.y, 0)));
+
+        float offset = 0.5f;
+
+        foreach (var Pos in ChesttoSpawn)
+        {
+            float randnum = Random.Range(0, 1);
+            if (randnum < 0.3)
+            {
+                Instantiate(TreasureChest, new Vector3(Pos.x + offset, Pos.y + offset, 0), Quaternion.identity);
+                //m_consumableManager.RegisterConsumable(treasurec);
+            }
+        }
     }
 }

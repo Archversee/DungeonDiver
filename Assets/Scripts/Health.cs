@@ -17,7 +17,7 @@ public class Health : MonoBehaviour
         currhealth = maxhealth;
     }
 
-    public void DealDmg(int dmg)
+    public void DealDmg(float dmg)
     {
         if (currhealth > 0)
         {

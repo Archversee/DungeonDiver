@@ -15,6 +15,9 @@ public class EnemyController : MonoBehaviour
     public GameObject coinLootDrop;
     public GameObject diamondLootDrop;
 
+    public bool CollidingwithLava = false;
+    public bool CollidingwithMud = false;
+
     // Start is called before the first frame update
     void Start()
     {

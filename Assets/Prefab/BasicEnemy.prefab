@@ -57,7 +57,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
-  m_SortingLayerID: 0
+  m_SortingLayerID: -1068302987
   m_SortingOrder: 0
   m_TargetDisplay: 0
 --- !u!114 &3570790570016185475
@@ -114,9 +114,10 @@ GameObject:
   - component: {fileID: -3147238103445942086}
   - component: {fileID: -5995026798694429017}
   - component: {fileID: 4302591733613805628}
+  - component: {fileID: 709938162501779693}
   m_Layer: 0
   m_Name: BasicEnemy
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -238,6 +239,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   istodestroy: 0
+  killedbyplayer: 0
   gameController: {fileID: 0}
   coinLootDrop: {fileID: 490834671063091604, guid: e6acb5a518baa4542a4c59a148cfd2fb, type: 3}
   diamondLootDrop: {fileID: 5407887656678771996, guid: df6dfe6e1c5f9c541a545acb299a8c0b, type: 3}
@@ -269,6 +271,32 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   foregroundImage: {fileID: 7626708756399161006}
   updateSpeedSeconds: 0.5
+--- !u!61 &709938162501779693
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3962216663329164565}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -0.000000014901161, y: -0.0032977127}
+  m_SpriteTilingProperty:
+    border: {x: 0.049999997, y: 0.049999997, z: 0.049999997, w: 0.049999997}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 0.16, y: 0.16}
+    newSize: {x: 0.16, y: 0.16}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 0.15560305, y: 0.14021358}
+  m_EdgeRadius: 0
 --- !u!1001 &4934533501115305623
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -360,6 +388,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1668750173639580884, guid: 07cf748d2ec71f74d9bfa02a66a2112d, type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 3291426710384701497, guid: 07cf748d2ec71f74d9bfa02a66a2112d, type: 3}
       propertyPath: m_Type
       value: 3
@@ -375,6 +407,10 @@ PrefabInstance:
     - target: {fileID: 4456646673519038574, guid: 07cf748d2ec71f74d9bfa02a66a2112d, type: 3}
       propertyPath: m_Name
       value: HealthBar
+      objectReference: {fileID: 0}
+    - target: {fileID: 4456646673519038574, guid: 07cf748d2ec71f74d9bfa02a66a2112d, type: 3}
+      propertyPath: m_Layer
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 8447126914790207619, guid: 07cf748d2ec71f74d9bfa02a66a2112d, type: 3}
       propertyPath: m_SizeDelta.x

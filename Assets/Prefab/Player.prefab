@@ -149,15 +149,21 @@ MonoBehaviour:
   dashLayerMask:
     serializedVersion: 2
     m_Bits: 0
+  DamagePopup: {fileID: 2370460031970902256, guid: f560e3007491b7d4db31e654ddf91e13, type: 3}
+  ArrowPrefab: {fileID: 7829279364066829709, guid: 2e943ca99b3db134b9e5114fa1661cc0, type: 3}
   speed: 3
   idletime: 0
   attackrange: 1.5
+  attackdamage: 20
   attackcooldown: 2
+  critrate: 10
+  critMultiplier: 1.2
   gameController: {fileID: 0}
   dashrange: 0
   dashcooldown: 0
   Coins: 0
   CurrencyValue: {fileID: 0}
+  ShopUI: {fileID: 0}
 --- !u!50 &8646463704980384584
 Rigidbody2D:
   serializedVersion: 4

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
@@ -20,6 +21,8 @@ private NavMeshSurface2d navMeshSurfaces;
 
     public float Score;
     public Text ScoreText;
+    public int levelCount;
+    public Text levelText;
 
     // Start is called before the first frame update
     void Start()
@@ -38,6 +41,7 @@ private NavMeshSurface2d navMeshSurfaces;
         player.position = temppos;
         doubleUpdateNavMesh();
         Score = 0f;
+        levelCount = 0;
     }
     void doubleUpdateNavMesh()
     {
@@ -48,10 +52,25 @@ private NavMeshSurface2d navMeshSurfaces;
     public void FixedUpdate()
     {
         ScoreText.text = "Score: " + Score.ToString();
+        levelText.text = "Level: " + levelCount.ToString();
+    }
+
+    private void Update()
+    {
+        if (player.GetComponent<Health>().currhealth <= 0)
+        {
+            ChangeSceneLoseScreen();
+        }
+    }
+
+    public void ChangeSceneLoseScreen()
+    {
+        SceneManager.LoadScene(1);
     }
 
     public void NewMap()
     {
+        levelCount++;
         tileMapVisualizer.Clear();
         m_EnemyManager.ClearList();
         Consumables = GameObject.FindGameObjectsWithTag("Consumable");
