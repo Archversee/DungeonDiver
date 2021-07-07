@@ -198,7 +198,7 @@ public class playerMovement : MonoBehaviour
         return vec;
     }
 
-    public void TakeDamage(int dmg)
+    public void TakeDamage(float dmg)
     {
        GetComponent<Health>().DealDmg(dmg);
        Transform damagePopupTransform = Instantiate(DamagePopup, transform.position, Quaternion.identity);

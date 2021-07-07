@@ -10,13 +10,20 @@ public class EnemyController : MonoBehaviour
     Health m_health;
     public bool istodestroy;
     public bool killedbyplayer;
-    public GameController gameController;
+    public GameObject gameController;
 
     public GameObject coinLootDrop;
     public GameObject diamondLootDrop;
 
     public bool CollidingwithLava = false;
     public bool CollidingwithMud = false;
+
+    float LastBurnTime = 0f;
+    int burnDmg = 2;
+    float burnDelay = 1f;
+
+    [SerializeField]
+    private Transform DamagePopup;
 
     // Start is called before the first frame update
     void Start()
@@ -26,7 +33,7 @@ public class EnemyController : MonoBehaviour
         //get components
         m_health = GetComponent<Health>();
 
-        gameController = FindObjectOfType<GameController>();
+        gameController = GameObject.FindGameObjectWithTag("GameController");
 
         istodestroy = false;
         killedbyplayer = false;
@@ -35,12 +42,11 @@ public class EnemyController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        /*Debug.Log(m_EnemyManager.Enemies.Count);*/
         if (m_health.currhealth <= 0)
         {
             istodestroy = true;
             killedbyplayer = true;
-            gameController.Score++;
+            gameController.GetComponent<GameController>().Score++;
         }
 
         if(istodestroy)
@@ -48,6 +54,26 @@ public class EnemyController : MonoBehaviour
             UnregisterEnemy();
             DestroyEnemy();
         }
+    }
+
+    private void FixedUpdate()
+    {
+        if (CollidingwithLava)
+        {
+            if (Time.time > LastBurnTime + burnDelay)
+            {
+                LastBurnTime = Time.time;
+                TakeDamage(burnDmg);
+            }
+        }
+    }
+
+    public void TakeDamage(int dmg)
+    {
+        GetComponent<Health>().DealDmg(dmg);
+        Transform damagePopupTransform = Instantiate(DamagePopup, transform.position, Quaternion.identity);
+        DamagePopup damagePopup = damagePopupTransform.GetComponent<DamagePopup>();
+        damagePopup.Setup(dmg, false, true);
     }
 
     void UnregisterEnemy()
@@ -72,6 +98,35 @@ public class EnemyController : MonoBehaviour
         }
 
         Destroy(gameObject);
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Environment"))
+        {
+            if (other.name == "Lava")
+            {
+                CollidingwithLava = true;
+            }
+            if (other.name == "Mud")
+            {
+                CollidingwithMud = true;
+            }
+        }
+    }
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.CompareTag("Environment"))
+        {
+            if (other.name == "Lava")
+            {
+               CollidingwithLava = false;
+            }
+            if (other.name == "Mud")
+            {
+                CollidingwithMud = false;
+            }
+        }
     }
 }
 

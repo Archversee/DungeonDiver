@@ -41,7 +41,7 @@ private NavMeshSurface2d navMeshSurfaces;
         player.position = temppos;
         doubleUpdateNavMesh();
         Score = 0f;
-        levelCount = 0;
+        levelCount = 1;
     }
     void doubleUpdateNavMesh()
     {

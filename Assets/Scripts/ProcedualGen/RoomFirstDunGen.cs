@@ -25,12 +25,15 @@ public class RoomFirstDunGen : RandomWalkGen
     //Enemies
     [SerializeField]
     private GameObject BasicEnemy;
+    [SerializeField]
+    private GameObject RangedEnemy;
+    //Consumables
     public GameObject HealthPot;
     public GameObject TreasureChest;
 
-    // public NavMeshSurface2d navMeshSurfaces;
+    public GameObject gameController;
 
-    ConsumableManager m_consumableManager = ConsumableManager.Singleton;
+    // public NavMeshSurface2d navMeshSurfaces;
 
     public Vector2Int StartingPos = Vector2Int.zero; 
 
@@ -74,13 +77,40 @@ public class RoomFirstDunGen : RandomWalkGen
 
     private void SpawnEnemy(HashSet<Vector2Int> floor)
     {
-        int EnemyCounterLimit = floor.Count / 50; //for each 50 tiles we allow 1 enemy to spawn
+        int tilenum = 50 - gameController.GetComponent<GameController>().levelCount;
+        float offset = 0.5f;
+        if (tilenum <= 30)
+        {
+            tilenum = 30; //clamp the least num of tiles to be 30
+        }    
+
+        int EnemyCounterLimit = floor.Count / tilenum; //for each 50 tiles we allow 1 enemy to spawn / as you go deeper into the level the amt of tiles needed decreases
 
         List<Vector2Int> enemiestoSpawn = floor.OrderBy(x => Guid.NewGuid()).Take(EnemyCounterLimit).ToList();  //sort by random order,then take the number we need
 
         foreach (var Pos in enemiestoSpawn)
         {
-            Instantiate(BasicEnemy, new Vector3(Pos.x, Pos.y, 0), Quaternion.identity);
+            int enemytospawn = Random.Range(0, 3);
+            if (enemytospawn == 0) //mix both
+            {
+                float randnum = Random.Range(0, 1);
+                if (randnum <= 0.5f)
+                {
+                    Instantiate(BasicEnemy, new Vector3(Pos.x + offset, Pos.y + offset, 0), Quaternion.identity);
+                }
+                else 
+                {
+                    Instantiate(RangedEnemy, new Vector3(Pos.x + offset, Pos.y + offset, 0), Quaternion.identity);
+                }
+            }
+            else if (enemytospawn == 1) //only melee
+            {
+                Instantiate(BasicEnemy, new Vector3(Pos.x + offset, Pos.y + offset, 0), Quaternion.identity);
+            }
+            else if(enemytospawn == 2) // onyl ranged
+            {
+                Instantiate(RangedEnemy, new Vector3(Pos.x + offset, Pos.y + offset, 0), Quaternion.identity);
+            }
         }
     }
 
@@ -96,7 +126,6 @@ public class RoomFirstDunGen : RandomWalkGen
         foreach (var Pos in HealthPotstoSpawn)
         {
             Instantiate(HealthPot, new Vector3(Pos.x + offset, Pos.y + offset, 0), Quaternion.identity);
-            //m_consumableManager.RegisterConsumable(healthp);
         }
         foreach (var Pos in ChesttoSpawn)
         {
@@ -104,7 +133,6 @@ public class RoomFirstDunGen : RandomWalkGen
             if (randnum < 0.3)
             {
                 Instantiate(TreasureChest, new Vector3(Pos.x + offset, Pos.y + offset, 0), Quaternion.identity);
-                //m_consumableManager.RegisterConsumable(treasurec);
             }
         }
     }

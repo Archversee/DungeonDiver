@@ -12,10 +12,6 @@ public class PlayerPickup : MonoBehaviour
     [SerializeField]
     private Transform DamagePopup;
 
-    float LastBurnTime = 0f;
-    int burnDmg = 2;
-    float burnDelay = 3f;
-
     ConsumableManager m_consumableManager = ConsumableManager.Singleton;
     void OnTriggerEnter2D(Collider2D other)
     {
@@ -53,7 +49,6 @@ public class PlayerPickup : MonoBehaviour
                     Instantiate(OpenedEmptyTreasureChest, new Vector3(other.transform.position.x, other.transform.position.y, 0), Quaternion.identity);
                 }
             }
-            m_consumableManager.UnregisterConsumable(other.gameObject);
             Destroy(other.gameObject);
         }
         else if (other.CompareTag("Environment"))

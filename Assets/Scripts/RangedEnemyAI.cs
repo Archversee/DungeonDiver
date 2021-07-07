@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class BasicEnemyAI : MonoBehaviour
+public class RangedEnemyAI : MonoBehaviour
 {
 
     private Transform player;
@@ -11,6 +11,8 @@ public class BasicEnemyAI : MonoBehaviour
     private Vector3 startpos;
     private Vector3 roampos;
     SpriteRenderer sprite;
+
+    public GameObject ArrowPrefab;
 
     [SerializeField]
     float Targetrange;
@@ -99,7 +101,7 @@ public class BasicEnemyAI : MonoBehaviour
                     agent.isStopped = true;
                     sprite.color = Color.red;
                 }
-                if (Vector3.Distance(transform.position, player.position) > Targetrange) 
+                if (Vector3.Distance(transform.position, player.position) > Targetrange)
                 {
                     state = State.ReturnToStart;
                     sprite.color = new Color(1, 1, 1, 1);
@@ -124,7 +126,7 @@ public class BasicEnemyAI : MonoBehaviour
             case State.ReturnToStart:
                 float ReachedposDist2 = 2f;
                 agent.SetDestination(startpos);
-                if(Vector3.Distance(transform.position, startpos) < ReachedposDist2)
+                if (Vector3.Distance(transform.position, startpos) < ReachedposDist2)
                 {
                     state = State.Roaming;
                 }
@@ -136,7 +138,12 @@ public class BasicEnemyAI : MonoBehaviour
     public void AttackPlayer()
     {
         LastAttackTime = Time.time;
-        player.GetComponent<playerMovement>().TakeDamage(Attackdmg);
+        Vector3 playerdir = (player.position - transform.position).normalized;
+
+        GameObject arrow = Instantiate(ArrowPrefab, transform.position, Quaternion.identity);
+        arrow.GetComponent<Rigidbody2D>().velocity = new Vector2(playerdir.x, playerdir.y) * 7;
+        arrow.transform.Rotate(0.0f, 0.0f, Mathf.Atan2(playerdir.y, playerdir.x) * Mathf.Rad2Deg);
+        arrow.GetComponent<EnemyArrow>().damage = Attackdmg;
         sprite.color = Color.green;
     }
 
@@ -154,7 +161,7 @@ public class BasicEnemyAI : MonoBehaviour
 
     private void FindTarget()
     {
-        if(Vector3.Distance(transform.position, player.position) < Targetrange)
+        if (Vector3.Distance(transform.position, player.position) < Targetrange)
         {
             //if player wihtin target range
             state = State.Chase;
@@ -162,3 +169,4 @@ public class BasicEnemyAI : MonoBehaviour
         }
     }
 }
+

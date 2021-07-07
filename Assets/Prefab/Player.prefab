@@ -162,6 +162,8 @@ MonoBehaviour:
   dashrange: 0
   dashcooldown: 0
   Coins: 0
+  CollidingwithLava: 0
+  CollidingwithMud: 0
   CurrencyValue: {fileID: 0}
   ShopUI: {fileID: 0}
 --- !u!50 &8646463704980384584
@@ -227,3 +229,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenedFullTreasureChest: {fileID: 6537843316421574175, guid: 1825a7d5edee11148b6b0ed76f972e60, type: 3}
   OpenedEmptyTreasureChest: {fileID: 6537843316421574175, guid: 11c30715fa849b74c97f80d480e940ac, type: 3}
+  DamagePopup: {fileID: 2370460031970902256, guid: f560e3007491b7d4db31e654ddf91e13, type: 3}
