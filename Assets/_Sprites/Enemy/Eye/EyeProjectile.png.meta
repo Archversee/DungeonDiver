@@ -1,0 +1,277 @@
+fileFormatVersion: 2
+guid: a56691fe3cfa90d45a8e0aa5ccc6e876
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -312808630280515670
+    second: EyeProjectile_0
+  - first:
+      213: 1219007059641162535
+    second: EyeProjectile_1
+  - first:
+      213: 3194554070962570641
+    second: EyeProjectile_2
+  - first:
+      213: 6352434798751633347
+    second: EyeProjectile_3
+  - first:
+      213: -1562715339663960116
+    second: EyeProjectile_4
+  - first:
+      213: -2306020945453691579
+    second: EyeProjectile_5
+  - first:
+      213: -4084781544591326591
+    second: EyeProjectile_6
+  - first:
+      213: -2675396273862305118
+    second: EyeProjectile_7
+  - first:
+      213: -169831688891900123
+    second: EyeProjectile_8
+  - first:
+      213: -5072616772031365638
+    second: EyeProjectile_9
+  - first:
+      213: 7857335562410257254
+    second: EyeProjectile_10
+  - first:
+      213: 2475836766991485743
+    second: EyeProjectile_11
+  - first:
+      213: -6595744333692011361
+    second: EyeProjectile_12
+  - first:
+      213: -461967967321090406
+    second: EyeProjectile_13
+  - first:
+      213: -3693547828773331664
+    second: EyeProjectile_14
+  - first:
+      213: -4112975901707181787
+    second: EyeProjectile_15
+  - first:
+      213: -7253698112061079127
+    second: EyeProjectile_16
+  - first:
+      213: -8488095576714485670
+    second: EyeProjectile_17
+  - first:
+      213: 4976425258066368980
+    second: EyeProjectile_18
+  - first:
+      213: 4826761661536074648
+    second: EyeProjectile_19
+  - first:
+      213: -2724847435596991458
+    second: EyeProjectile_20
+  - first:
+      213: -5262694775505125845
+    second: EyeProjectile_21
+  - first:
+      213: -9046813139046283799
+    second: EyeProjectile_22
+  - first:
+      213: -7975413035993037055
+    second: EyeProjectile_23
+  - first:
+      213: -3330304876815678295
+    second: EyeProjectile_24
+  externalObjects: {}
+  serializedVersion: 11
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: -1
+    mipBias: -100
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: EyeProjectile_6
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 16
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1820099c3d0ff47c0800000000000000
+      internalID: -4084781544591326591
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EyeProjectile_7
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 16
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2aa980783451fdad0800000000000000
+      internalID: -2675396273862305118
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EyeProjectile_8
+      rect:
+        serializedVersion: 2
+        x: 112
+        y: 16
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 52f5eff8af2a4adf0800000000000000
+      internalID: -169831688891900123
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EyeProjectile_9
+      rect:
+        serializedVersion: 2
+        x: 157
+        y: 16
+        width: 21
+        height: 19
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: afdb165fbe17a99b0800000000000000
+      internalID: -5072616772031365638
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+  spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

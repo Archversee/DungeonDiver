@@ -44,6 +44,7 @@ public class playerMovement : MonoBehaviour
 
     //UI
     public Text CurrencyValue;
+    public Transform PlayerStats;
     public UIShop ShopUI;
 
     bool isDashButtonDown = false;
@@ -243,6 +244,8 @@ public class playerMovement : MonoBehaviour
                 TakeDamage(burnDmg);
             }
         }
+
+        UpdateStats();
     }
 
     private void SetAnimatorMovement(Vector2 dir , float idletimer)
@@ -282,6 +285,33 @@ public class playerMovement : MonoBehaviour
     public void UpdateCurrency()
     {
         CurrencyValue.text = Coins.ToString();
+    }
+
+    public void UpdateStats()
+    {
+        Transform temp = PlayerStats.Find("Health");
+        temp.GetComponent<Text>().text = ("Health : ") + (GetComponent<Health>().maxhealth).ToString();
+        temp = PlayerStats.Find("Damage");
+        temp.GetComponent<Text>().text = ("Damage : ") + attackdamage.ToString();
+        temp = PlayerStats.Find("Critdmg");
+        temp.GetComponent<Text>().text = ("Crit Damage : ") + critMultiplier.ToString();
+        temp = PlayerStats.Find("Critrate");
+        temp.GetComponent<Text>().text = ("Crit Rate : ") + critrate.ToString();
+        temp = PlayerStats.Find("MovSpeed");
+        temp.GetComponent<Text>().text = ("Speed : ") + speed.ToString();
+        temp = PlayerStats.Find("Status");
+        if (CollidingwithLava)
+        {
+            temp.GetComponent<Text>().text = ("Status : Burning!");
+        }
+        else if(CollidingwithMud)
+        {
+            temp.GetComponent<Text>().text = ("Status : Slowed!");
+        }
+        else
+        {
+            temp.GetComponent<Text>().text = ("Status :");
+        }
     }
 
     public int getCurrency()

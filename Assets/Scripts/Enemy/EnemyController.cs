@@ -47,6 +47,11 @@ public class EnemyController : MonoBehaviour
             istodestroy = true;
             killedbyplayer = true;
             gameController.GetComponent<GameController>().Score++;
+
+            if(GetComponent<DuplicateEnemy>() != null)
+            {
+                GetComponent<DuplicateEnemy>().DuplicateSelf();
+            }
         }
 
         if(istodestroy)

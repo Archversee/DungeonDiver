@@ -27,9 +27,12 @@ public class RoomFirstDunGen : RandomWalkGen
     private GameObject BasicEnemy;
     [SerializeField]
     private GameObject RangedEnemy;
+    [SerializeField]
+    private GameObject DuplicateEnemy;
     //Consumables
     public GameObject HealthPot;
     public GameObject TreasureChest;
+    public GameObject HealingFountain;
 
     public GameObject gameController;
 
@@ -44,7 +47,17 @@ public class RoomFirstDunGen : RandomWalkGen
 
     public void CreateRooms()
     {
-        var roomList = ProcedualGenAlgo.BinarySpacePartitioning(new BoundsInt((Vector3Int)startpos, new Vector3Int(dungeonWidth, dungeonHeight, 0)), minRoomWidth, minRoomHeight);
+        int useddungeonWidth = dungeonWidth + gameController.GetComponent<GameController>().levelCount; //scaling up with lavel count
+        int usedungeonHeight = dungeonHeight + gameController.GetComponent<GameController>().levelCount;
+        if(useddungeonWidth > 80)
+        {
+            useddungeonWidth = 80;
+        }
+        if (usedungeonHeight > 80)
+        {
+            usedungeonHeight = 80;
+        }
+        var roomList = ProcedualGenAlgo.BinarySpacePartitioning(new BoundsInt((Vector3Int)startpos, new Vector3Int(useddungeonWidth, usedungeonHeight, 0)), minRoomWidth, minRoomHeight);
 
         HashSet<Vector2Int> floor = new HashSet<Vector2Int>();
 
@@ -90,26 +103,51 @@ public class RoomFirstDunGen : RandomWalkGen
 
         foreach (var Pos in enemiestoSpawn)
         {
-            int enemytospawn = Random.Range(0, 3);
-            if (enemytospawn == 0) //mix both
+            int enemytospawn = 0;
+            if (gameController.GetComponent<GameController>().levelCount > 5)
+            {
+                enemytospawn = Random.Range(0, 5);
+            }
+            else if (gameController.GetComponent<GameController>().levelCount <= 5)
+            {
+                enemytospawn = Random.Range(0, 4);
+            }
+            if (enemytospawn == 1) //mix all
             {
                 float randnum = Random.Range(0, 1);
-                if (randnum <= 0.5f)
+                if (randnum <= 0.3f)
                 {
                     Instantiate(BasicEnemy, new Vector3(Pos.x + offset, Pos.y + offset, 0), Quaternion.identity);
                 }
-                else 
+                else if (randnum < 0.6f && randnum >= 0.3f)
                 {
                     Instantiate(RangedEnemy, new Vector3(Pos.x + offset, Pos.y + offset, 0), Quaternion.identity);
                 }
+                else
+                {
+                    if (gameController.GetComponent<GameController>().levelCount > 5)
+                    {
+                        GameObject enemy = Instantiate(DuplicateEnemy, new Vector3(Pos.x + offset, Pos.y + offset, 0), Quaternion.identity);
+                        enemy.GetComponent<DuplicateEnemy>().stage = 1;
+                    }
+                    else
+                    {
+                        Instantiate(BasicEnemy, new Vector3(Pos.x + offset, Pos.y + offset, 0), Quaternion.identity);
+                    }
+                }
             }
-            else if (enemytospawn == 1) //only melee
+            else if (enemytospawn == 2) //only skele
             {
                 Instantiate(BasicEnemy, new Vector3(Pos.x + offset, Pos.y + offset, 0), Quaternion.identity);
             }
-            else if(enemytospawn == 2) // onyl ranged
+            else if(enemytospawn == 3) // onyl eye
             {
                 Instantiate(RangedEnemy, new Vector3(Pos.x + offset, Pos.y + offset, 0), Quaternion.identity);
+            }
+            else if (enemytospawn == 4) // onyl mushroom
+            {
+                GameObject enemy = Instantiate(DuplicateEnemy, new Vector3(Pos.x + offset, Pos.y + offset, 0), Quaternion.identity);
+                enemy.GetComponent<DuplicateEnemy>().stage = 1;
             }
         }
     }
@@ -346,15 +384,36 @@ public class RoomFirstDunGen : RandomWalkGen
             else
             {
                 int randnum = Random.Range(0, 100);
-                if (randnum >= 70) //30% chance for special room
+                if (randnum >= 60) //30% chance for special room
                 {
-                    if (randnum >= 70 && randnum < 80) // 10% for treasure room (no enemies only chest)
+                    if (randnum >= 60 && randnum < 70) // 10% for HealingFountain room (have enemies and healing fountain)
+                    {
+                        if (gameController.GetComponent<GameController>().levelCount > 6)
+                        {
+                            SpawnFountainRoom(room);
+                            SpawnEnemy(tempfloor);
+                        }
+                        else
+                        {
+                            SpawnMudRoom(tempfloor);
+                            SpawnEnemy(tempfloor);
+                        }
+                    }
+                    else if (randnum >= 70 && randnum < 80) // 10% for treasure room (no enemies only chest)
                     {
                         SpawnTreasureRoom(room);
                     }
                     else if(randnum >= 80 && randnum < 90) // 10% for lava room (lava burns player)
                     {
-                        SpawnLavaRoom(tempfloor);
+                        if (gameController.GetComponent<GameController>().levelCount > 3)
+                        {
+                            SpawnLavaRoom(tempfloor);
+                        }
+                        else
+                        {
+                            SpawnMudRoom(tempfloor);
+                            SpawnEnemy(tempfloor);
+                        }
                     }
                     else if (randnum >= 90) // 10% for Mud room (Mud slows player)
                     {
@@ -386,6 +445,13 @@ public class RoomFirstDunGen : RandomWalkGen
             mud.Add(Pos);
         }
         tileMapVisualizer.PaintMudTiles(mud);
+    }
+
+    private void SpawnFountainRoom(BoundsInt room)
+    {
+        float offset = 0.5f;
+
+        Instantiate(HealingFountain, new Vector3(room.center.x + offset, room.center.y + offset, 0), Quaternion.identity);
     }
 
     private void SpawnLavaRoom(HashSet<Vector2Int> floor)

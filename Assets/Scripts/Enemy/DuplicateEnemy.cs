@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class RangedEnemyAI : MonoBehaviour
+public class DuplicateEnemy : MonoBehaviour
 {
 
     private Transform player;
@@ -12,7 +12,8 @@ public class RangedEnemyAI : MonoBehaviour
     private Vector3 roampos;
     SpriteRenderer sprite;
 
-    public GameObject ArrowPrefab;
+    [SerializeField]
+    private GameObject DuplicateEnemyAI;
 
     [SerializeField]
     float Targetrange;
@@ -25,8 +26,12 @@ public class RangedEnemyAI : MonoBehaviour
     float LastAttackTime = 0f;
     float mudmovespeed;
     float defaultspeed;
+    [SerializeField]
+    public float stage;
 
     private GameObject gameController;
+
+    private Animator animator;
 
     //States
     private enum State
@@ -53,23 +58,54 @@ public class RangedEnemyAI : MonoBehaviour
         roampos = GetRoamingpos();
         state = State.Roaming;
         sprite = GetComponent<SpriteRenderer>();
-        mudmovespeed = agent.speed * 0.5f;
         defaultspeed = agent.speed;
+        mudmovespeed = agent.speed * 0.5f;
 
         gameController = GameObject.FindGameObjectWithTag("GameController");
+
+        animator = GetComponent<Animator>();
+
+        if(stage == 2)
+        {
+            Vector3 local = transform.localScale;
+            transform.localScale = new Vector3(local.x * 0.75f, local.y * 0.75f, local.z * 0.75f);
+            Attackrange *= 0.75f;
+            Attackdmg *= 0.75f;
+            GetComponent<Health>().maxhealth -= (GetComponent<Health>().maxhealth * 0.75f);
+            GetComponent<Health>().currhealth = GetComponent<Health>().maxhealth;
+        }
+        else if (stage == 3)
+        {
+            Vector3 local = transform.localScale;
+            transform.localScale = new Vector3(local.x * 0.50f, local.y * 0.50f, local.z * 0.50f);
+            Attackrange *= 0.5f;
+            Attackdmg *= 0.5f;
+            GetComponent<Health>().maxhealth -= (GetComponent<Health>().maxhealth * 0.50f);
+            GetComponent<Health>().currhealth = GetComponent<Health>().maxhealth;
+        }
 
         if ((gameController.GetComponent<GameController>().levelCount / 3) > 0)
         {
             int multiplier = gameController.GetComponent<GameController>().levelCount / 3;
             Attackdmg += (int)(Attackdmg * 0.3f) * multiplier;
-            GetComponent<Health>().maxhealth += (GetComponent<Health>().maxhealth * 0.5f) * multiplier;
+            GetComponent<Health>().maxhealth += (GetComponent<Health>().maxhealth * 0.2f) * multiplier;
             GetComponent<Health>().currhealth = GetComponent<Health>().maxhealth;
         }
+
     }
 
     private void Update()
     {
-        if (GetComponent<EnemyController>().CollidingwithMud == false)
+        Vector3 playerdir = (player.position - transform.position).normalized;
+        if (playerdir.x < 0)
+        {
+            GetComponent<SpriteRenderer>().flipX = true;
+        }
+        else
+        {
+            GetComponent<SpriteRenderer>().flipX = false;
+        }
+        if (GetComponent<EnemyController>().CollidingwithMud)
         {
             agent.speed = mudmovespeed;
         }
@@ -81,16 +117,20 @@ public class RangedEnemyAI : MonoBehaviour
         {
             default:
             case State.Roaming:
-                agent.SetDestination(roampos);
-                float ReachedposDist = 2f;
-                if (Vector3.Distance(transform.position, roampos) < ReachedposDist)  //if reached roam pos
+                if (agent.isOnNavMesh)
                 {
-                    roampos = GetRoamingpos();
+                    agent.SetDestination(roampos);
+                    float ReachedposDist = 2f;
+                    if (Vector3.Distance(transform.position, roampos) < ReachedposDist)  //if reached roam pos
+                    {
+                        roampos = GetRoamingpos();
+                    }
                 }
-                FindTarget();
+                FindTarget(playerdir);
                 break;
             case State.Idle:
-                FindTarget();
+                FindTarget(playerdir);
+                animator.SetBool("Walking", false);
                 break;
             case State.Chase:
                 agent.SetDestination(player.position);
@@ -99,24 +139,21 @@ public class RangedEnemyAI : MonoBehaviour
                     //if player wihtin attack range
                     state = State.Attack;
                     agent.isStopped = true;
-                    sprite.color = Color.red;
+                    animator.SetBool("Walking", false);
+
                 }
                 if (Vector3.Distance(transform.position, player.position) > Targetrange)
                 {
                     state = State.ReturnToStart;
-                    sprite.color = new Color(1, 1, 1, 1);
                 }
                 break;
             case State.Attack:
                 if (Vector3.Distance(transform.position, player.position) > Attackrange)
                 {
                     state = State.Chase;
-                    sprite.color = Color.yellow;
                     agent.isStopped = false;
-                }
-                if (Time.time > LastAttackTime + 0.1 && sprite.color == Color.green) // 
-                {
-                    sprite.color = Color.red;
+                    animator.SetBool("Walking", true);
+
                 }
                 if (Time.time > LastAttackTime + AttackDelay) // 
                 {
@@ -130,7 +167,6 @@ public class RangedEnemyAI : MonoBehaviour
                 {
                     state = State.Roaming;
                 }
-                //FindTarget();
                 break;
         }
     }
@@ -138,13 +174,24 @@ public class RangedEnemyAI : MonoBehaviour
     public void AttackPlayer()
     {
         LastAttackTime = Time.time;
-        Vector3 playerdir = (player.position - transform.position).normalized;
+        player.GetComponent<playerMovement>().TakeDamage(Attackdmg);
 
-        GameObject arrow = Instantiate(ArrowPrefab, transform.position, Quaternion.identity);
-        arrow.GetComponent<Rigidbody2D>().velocity = new Vector2(playerdir.x, playerdir.y) * 7;
-        arrow.transform.Rotate(0.0f, 0.0f, Mathf.Atan2(playerdir.y, playerdir.x) * Mathf.Rad2Deg);
-        arrow.GetComponent<EnemyArrow>().damage = Attackdmg;
-        sprite.color = Color.green;
+        animator.SetTrigger("Attacking");
+    }
+
+    public void DuplicateSelf()
+    {
+        if (stage < 3)
+        {
+            float offset = 0.1f;
+            float temp = stage + 1;
+            for (float i = 0; i <= stage; i++)
+            {
+                GameObject enemy = Instantiate(DuplicateEnemyAI, new Vector3(transform.position.x + offset, transform.position.y + offset, 0), Quaternion.identity);
+                enemy.GetComponent<DuplicateEnemy>().stage = temp;
+                offset += 0.1f;
+            }
+        }
     }
 
     private Vector3 GetRoamingpos()
@@ -159,13 +206,13 @@ public class RangedEnemyAI : MonoBehaviour
         return new Vector3(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f)).normalized;
     }
 
-    private void FindTarget()
+    private void FindTarget(Vector2 dir)
     {
         if (Vector3.Distance(transform.position, player.position) < Targetrange)
         {
             //if player wihtin target range
             state = State.Chase;
-            sprite.color = Color.yellow;
+            animator.SetBool("Walking", true);
         }
     }
 }

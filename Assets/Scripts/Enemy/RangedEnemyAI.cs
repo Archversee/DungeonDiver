@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class BasicEnemyAI : MonoBehaviour
+public class RangedEnemyAI : MonoBehaviour
 {
 
     private Transform player;
@@ -11,6 +11,8 @@ public class BasicEnemyAI : MonoBehaviour
     private Vector3 startpos;
     private Vector3 roampos;
     SpriteRenderer sprite;
+
+    public GameObject ArrowPrefab;
 
     [SerializeField]
     float Targetrange;
@@ -25,6 +27,8 @@ public class BasicEnemyAI : MonoBehaviour
     float defaultspeed;
 
     private GameObject gameController;
+
+    private Animator animator;
 
     //States
     private enum State
@@ -51,23 +55,34 @@ public class BasicEnemyAI : MonoBehaviour
         roampos = GetRoamingpos();
         state = State.Roaming;
         sprite = GetComponent<SpriteRenderer>();
-        mudmovespeed = agent.speed * 0.5f;
         defaultspeed = agent.speed;
+        mudmovespeed = agent.speed * 0.5f;
 
         gameController = GameObject.FindGameObjectWithTag("GameController");
+
+        animator = GetComponent<Animator>();
 
         if ((gameController.GetComponent<GameController>().levelCount / 3) > 0)
         {
             int multiplier = gameController.GetComponent<GameController>().levelCount / 3;
-            Attackdmg += (int)(Attackdmg * 0.3f) * multiplier;
-            GetComponent<Health>().maxhealth += (GetComponent<Health>().maxhealth * 0.5f) * multiplier;
+            Attackdmg += (int)(Attackdmg * 0.2f) * multiplier;
+            GetComponent<Health>().maxhealth += (GetComponent<Health>().maxhealth * 0.2f) * multiplier;
             GetComponent<Health>().currhealth = GetComponent<Health>().maxhealth;
         }
     }
 
     private void Update()
     {
-        if (GetComponent<EnemyController>().CollidingwithMud == false)
+        Vector3 playerdir = (player.position - transform.position).normalized;
+        if(playerdir.x < 0)
+        {
+            GetComponent<SpriteRenderer>().flipX = true;
+        }
+        else
+        {
+            GetComponent<SpriteRenderer>().flipX = false;
+        }
+        if (GetComponent<EnemyController>().CollidingwithMud)
         {
             agent.speed = mudmovespeed;
         }
@@ -79,16 +94,20 @@ public class BasicEnemyAI : MonoBehaviour
         {
             default:
             case State.Roaming:
-                agent.SetDestination(roampos);
-                float ReachedposDist = 2f;
-                if (Vector3.Distance(transform.position, roampos) < ReachedposDist)  //if reached roam pos
+                if (agent.isOnNavMesh)
                 {
-                    roampos = GetRoamingpos();
+                    agent.SetDestination(roampos);
+                    float ReachedposDist = 2f;
+                    if (Vector3.Distance(transform.position, roampos) < ReachedposDist)  //if reached roam pos
+                    {
+                        roampos = GetRoamingpos();
+                    }
                 }
-                FindTarget();
+                FindTarget(playerdir);
                 break;
             case State.Idle:
-                FindTarget();
+                FindTarget(playerdir);
+                //SetAnimatorMovement(playerdir);
                 break;
             case State.Chase:
                 agent.SetDestination(player.position);
@@ -97,24 +116,18 @@ public class BasicEnemyAI : MonoBehaviour
                     //if player wihtin attack range
                     state = State.Attack;
                     agent.isStopped = true;
-                    sprite.color = Color.red;
                 }
-                if (Vector3.Distance(transform.position, player.position) > Targetrange) 
+                if (Vector3.Distance(transform.position, player.position) > Targetrange)
                 {
                     state = State.ReturnToStart;
-                    sprite.color = new Color(1, 1, 1, 1);
                 }
                 break;
             case State.Attack:
                 if (Vector3.Distance(transform.position, player.position) > Attackrange)
                 {
                     state = State.Chase;
-                    sprite.color = Color.yellow;
                     agent.isStopped = false;
-                }
-                if (Time.time > LastAttackTime + 0.1 && sprite.color == Color.green) // 
-                {
-                    sprite.color = Color.red;
+                    //SetAnimatorMovement(playerdir);
                 }
                 if (Time.time > LastAttackTime + AttackDelay) // 
                 {
@@ -124,11 +137,10 @@ public class BasicEnemyAI : MonoBehaviour
             case State.ReturnToStart:
                 float ReachedposDist2 = 2f;
                 agent.SetDestination(startpos);
-                if(Vector3.Distance(transform.position, startpos) < ReachedposDist2)
+                if (Vector3.Distance(transform.position, startpos) < ReachedposDist2)
                 {
                     state = State.Roaming;
                 }
-                //FindTarget();
                 break;
         }
     }
@@ -136,8 +148,14 @@ public class BasicEnemyAI : MonoBehaviour
     public void AttackPlayer()
     {
         LastAttackTime = Time.time;
-        player.GetComponent<playerMovement>().TakeDamage(Attackdmg);
-        sprite.color = Color.green;
+        Vector3 playerdir = (player.position - transform.position).normalized;
+
+        GameObject arrow = Instantiate(ArrowPrefab, transform.position, Quaternion.identity);
+        arrow.GetComponent<Rigidbody2D>().velocity = new Vector2(playerdir.x, playerdir.y) * 7;
+        arrow.transform.Rotate(0.0f, 0.0f, Mathf.Atan2(playerdir.y, playerdir.x) * Mathf.Rad2Deg);
+        arrow.GetComponent<EnemyArrow>().damage = Attackdmg;
+        //animator.SetTrigger("Attacking");
+
     }
 
     private Vector3 GetRoamingpos()
@@ -147,18 +165,24 @@ public class BasicEnemyAI : MonoBehaviour
         return roampos;
     }
 
+    private void SetAnimatorMovement(Vector2 dir)
+    {
+       animator.SetBool("IsWalking", true);
+    }
+
     public static Vector3 GetRandomDir()
     {
         return new Vector3(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f)).normalized;
     }
 
-    private void FindTarget()
+    private void FindTarget(Vector2 dir)
     {
-        if(Vector3.Distance(transform.position, player.position) < Targetrange)
+        if (Vector3.Distance(transform.position, player.position) < Targetrange)
         {
             //if player wihtin target range
             state = State.Chase;
-            sprite.color = Color.yellow;
+            //SetAnimatorMovement(dir);
         }
     }
 }
+

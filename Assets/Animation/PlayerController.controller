@@ -352,7 +352,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: PlayerBowleft
-  m_Speed: 1
+  m_Speed: 2
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 5232386744853771199}
@@ -924,7 +924,7 @@ AnimatorStateMachine:
     m_Position: {x: -400, y: 230, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -3706638368725875039}
-    m_Position: {x: -370, y: -340, z: 0}
+    m_Position: {x: -360, y: -350, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 5529827140002380175}
     m_Position: {x: 1330, y: -400, z: 0}
@@ -1068,7 +1068,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: PlayerbowRight
-  m_Speed: 1
+  m_Speed: 2
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 584033616593945937}
