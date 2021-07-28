@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.IO;
 
 public class GameController : MonoBehaviour
 {
@@ -14,15 +15,19 @@ public class GameController : MonoBehaviour
     ConsumableManager m_consumableManager = ConsumableManager.Singleton;
 
     GameObject[] Consumables;
+    GameObject[] Deletables;
 
-private NavMeshSurface2d navMeshSurfaces;
+    private NavMeshSurface2d navMeshSurfaces;
 
     public Transform player;
 
-    public float Score;
+    public float Score; //1
     public Text ScoreText;
-    public int levelCount;
+    public int levelCount; //2
     public Text levelText;
+
+    public Transform MenuUI;
+    public Transform SaveScoreUI;
 
     // Start is called before the first frame update
     void Start()
@@ -42,6 +47,12 @@ private NavMeshSurface2d navMeshSurfaces;
         doubleUpdateNavMesh();
         Score = 0f;
         levelCount = 1;
+
+        string path = Application.persistentDataPath + "/player.data";
+        if (File.Exists(path))
+        {
+            MenuUI.gameObject.SetActive(true);
+        }
     }
     void doubleUpdateNavMesh()
     {
@@ -59,7 +70,9 @@ private NavMeshSurface2d navMeshSurfaces;
     {
         if (player.GetComponent<Health>().currhealth <= 0)
         {
-            ChangeSceneLoseScreen();
+            SaveScoreUI.gameObject.SetActive(true);
+            SaveScoreUI.Find("Score").GetComponent<Text>().text = ScoreText.text;
+            //ChangeSceneLoseScreen();
         }
     }
 
@@ -74,9 +87,14 @@ private NavMeshSurface2d navMeshSurfaces;
         tileMapVisualizer.Clear();
         m_EnemyManager.ClearList();
         Consumables = GameObject.FindGameObjectsWithTag("Consumable");
+        Deletables = GameObject.FindGameObjectsWithTag("Environmentals");
         foreach (GameObject consum in Consumables)
         {
             Destroy(consum);
+        }
+        foreach (GameObject delete in Deletables)
+        {
+            Destroy(delete);
         }
 
         roomFirstDunGen.CreateRooms();
@@ -88,5 +106,32 @@ private NavMeshSurface2d navMeshSurfaces;
         temppos.x = roomFirstDunGen.StartingPos.x + 1;
         temppos.y = roomFirstDunGen.StartingPos.y + 1;
         player.position = temppos;
+
+        //auto save every new level
+        SaveSystem.SavePlayer(player.GetComponent<playerMovement>(), this);
+    }
+
+    public void LoadPlayer()
+    {
+        PlayerData data = SaveSystem.LoadPlayer();
+        Score = data.score;
+        levelCount = data.levelcount - 1;
+
+        player.GetComponent<playerMovement>().speed = data.speed;
+        player.GetComponent<playerMovement>().attackrange = data.attackrange;
+        player.GetComponent<playerMovement>().attackdamage = data.attackdamage;
+        player.GetComponent<playerMovement>().attackcooldown = data.attackcooldown;
+        player.GetComponent<playerMovement>().critrate = data.critrate;
+        player.GetComponent<playerMovement>().critMultiplier = data.critMultiplier;
+        player.GetComponent<playerMovement>().Coins = data.Coins;
+        NewMap();
+        MenuUI.gameObject.SetActive(false);
+        player.GetComponent<playerMovement>().UpdateCurrency();
+    }
+
+    public void closeLoadMenu()
+    {
+        MenuUI.gameObject.SetActive(false);
+        SaveSystem.SavePlayer(player.GetComponent<playerMovement>(), this);
     }
 }

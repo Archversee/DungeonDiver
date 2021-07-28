@@ -10,6 +10,7 @@ TagManager:
   - Wall
   - Environment
   - EnemyProjectile
+  - Environmentals
   layers:
   - Default
   - TransparentFX

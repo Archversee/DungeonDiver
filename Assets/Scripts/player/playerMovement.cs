@@ -15,28 +15,36 @@ public class playerMovement : MonoBehaviour
 
     public GameObject ArrowPrefab;
 
-    public float speed;
+    public float speed; //3
     public float idletime;
-    public float attackrange;
-    public float attackdamage;
-    public float attackcooldown;
-    public float critrate;
-    public float critMultiplier;
+    public float attackrange; //4
+    public float attackdamage; //5
+    public float attackcooldown; //6
+    public float critrate; //7
+    public float critMultiplier; //8
     private Vector2 dir;
     private Vector3 movedir;
     private Animator animator;
-    private Rigidbody2D rigidbody2D;
+    //private Rigidbody2D rigidbody2D;
     public GameController gameController;
 
     public float dashrange;
     public float dashcooldown;
 
-    public int Coins;
+    public int Coins; //9
 
     private bool CollidingwithShop = false;
     public bool CollidingwithLava = false;
     public bool CollidingwithMud = false;
+    public bool CollidingwithFountain = false;
 
+    public bool timestwodamage = false;
+    public bool dodgeeffect = false;
+    public bool arroweffect = false;
+
+    public float timestwotimer = 0f; 
+    public float dodgeeffecttimer = 0f; 
+    public float arroweffecttimer = 0f; 
 
     float LastBurnTime = 0f;
     int burnDmg = 2;
@@ -55,13 +63,16 @@ public class playerMovement : MonoBehaviour
     private void Awake()
     {
         animator = GetComponent<Animator>();
-        rigidbody2D = GetComponent<Rigidbody2D>();
+        //rigidbody2D = GetComponent<Rigidbody2D>();
     }
 
     private void Update()
     {
-        TakeInput();
-        idletime += Time.deltaTime;
+        if (GetComponent<Health>().currhealth > 0)
+        {
+            TakeInput();
+            idletime += Time.deltaTime;
+        }
     }
 
     private void TakeInput()
@@ -139,16 +150,16 @@ public class playerMovement : MonoBehaviour
                 bool isCrit = UnityEngine.Random.Range(0, 100) < critrate;
                 if (isCrit)
                 {
-                    attackdamage *= critMultiplier;
+                    normaldmg *= critMultiplier;
                 }
-                targetenemy.GetComponent<Health>().DealDmg(attackdamage);
+                if(timestwodamage)
+                {
+                    normaldmg *= 2;
+                }
+                targetenemy.GetComponent<Health>().DealDmg(normaldmg);
                 Transform damagePopupTransform = Instantiate(DamagePopup, targetenemy.transform.position, Quaternion.identity);
                 DamagePopup damagePopup = damagePopupTransform.GetComponent<DamagePopup>();
-                damagePopup.Setup(attackdamage, isCrit , false);
-                if (isCrit)
-                {
-                    attackdamage = normaldmg;
-                }
+                damagePopup.Setup(normaldmg, isCrit , false);
 
             }
             movedir = Vector3.zero;
@@ -181,6 +192,17 @@ public class playerMovement : MonoBehaviour
             GameObject arrow = Instantiate(ArrowPrefab, transform.position, Quaternion.identity);
             arrow.GetComponent<Rigidbody2D>().velocity = new Vector2(Mousedir.x, Mousedir.y) * 7;
             arrow.transform.Rotate(0.0f, 0.0f, Mathf.Atan2(Mousedir.y, Mousedir.x) * Mathf.Rad2Deg);
+
+            if (arroweffect)
+            {
+                GameObject arrow2 = Instantiate(ArrowPrefab, transform.position, Quaternion.identity);
+                arrow2.GetComponent<Rigidbody2D>().velocity = new Vector2(Mousedir.x, Mousedir.y) * 14;
+                arrow2.transform.Rotate(0.0f, 0.0f, Mathf.Atan2(Mousedir.y, Mousedir.x) * Mathf.Rad2Deg);
+
+                GameObject arrow3 = Instantiate(ArrowPrefab, transform.position, Quaternion.identity);
+                arrow3.GetComponent<Rigidbody2D>().velocity = new Vector2(Mousedir.x, Mousedir.y) * 3.5f;
+                arrow3.transform.Rotate(0.0f, 0.0f, Mathf.Atan2(Mousedir.y, Mousedir.x) * Mathf.Rad2Deg);
+            }
         }
     }
 
@@ -201,10 +223,19 @@ public class playerMovement : MonoBehaviour
 
     public void TakeDamage(float dmg)
     {
-       GetComponent<Health>().DealDmg(dmg);
-       Transform damagePopupTransform = Instantiate(DamagePopup, transform.position, Quaternion.identity);
-       DamagePopup damagePopup = damagePopupTransform.GetComponent<DamagePopup>();
-       damagePopup.Setup(dmg, false, true);
+        if (dodgeeffect == false)
+        {
+            GetComponent<Health>().DealDmg(dmg);
+            Transform damagePopupTransform = Instantiate(DamagePopup, transform.position, Quaternion.identity);
+            DamagePopup damagePopup = damagePopupTransform.GetComponent<DamagePopup>();
+            damagePopup.Setup(dmg, false, true);
+        }
+        else
+        {
+            Transform damagePopupTransform = Instantiate(DamagePopup, transform.position, Quaternion.identity);
+            DamagePopup damagePopup = damagePopupTransform.GetComponent<DamagePopup>();
+            damagePopup.TextSetup("Dodged!");
+        }
     }
 
     private void FixedUpdate()
@@ -214,14 +245,59 @@ public class playerMovement : MonoBehaviour
         float mudmovespeed = speed * 0.5f;
         if(!CollidingwithMud)
         {
-            rigidbody2D.velocity = movedir * speed;
+            GetComponent<Rigidbody2D>().velocity = movedir * speed;
         }
         else
         {
-            rigidbody2D.velocity = movedir * mudmovespeed;
+            GetComponent<Rigidbody2D>().velocity = movedir * mudmovespeed;
         }
 
-        if(isDashButtonDown)
+        if (CollidingwithFountain)
+        {
+            if (GetComponent<Health>().currhealth > 0)
+            {
+                GetComponent<Health>().Heal(0.1f);
+            }
+        }
+
+        if (timestwodamage == true)
+        {
+            timestwotimer -= Time.deltaTime;
+            if (timestwotimer < 0.0f)
+            {
+                timestwodamage = false;
+                Transform damagePopupTransform = Instantiate(DamagePopup, transform.position, Quaternion.identity);
+                DamagePopup damagePopup = damagePopupTransform.GetComponent<DamagePopup>();
+                damagePopup.TextSetup("2x Damage ended");
+            }
+        }
+
+        if (dodgeeffect == true)
+        {
+            dodgeeffecttimer -= Time.deltaTime;
+            if (dodgeeffecttimer < 0.0f)
+            {
+                dodgeeffect = false;
+                Transform damagePopupTransform = Instantiate(DamagePopup, transform.position, Quaternion.identity);
+                DamagePopup damagePopup = damagePopupTransform.GetComponent<DamagePopup>();
+                damagePopup.TextSetup("Dodge Effect ended");
+            }
+        }
+
+        /*if (arroweffect == true)
+        {
+            arroweffecttimer -= Time.deltaTime;
+            if (arroweffecttimer < 0.0f)
+            {
+                arroweffect = false;
+                Transform damagePopupTransform = Instantiate(DamagePopup, transform.position, Quaternion.identity);
+                DamagePopup damagePopup = damagePopupTransform.GetComponent<DamagePopup>();
+                damagePopup.TextSetup("More Arrows ended");
+            }
+        }*/
+
+
+        if (isDashButtonDown)
         {
             float dashAmt = 1.5f;
             Vector3 dashpos = transform.position + movedir * dashAmt;
@@ -232,7 +308,7 @@ public class playerMovement : MonoBehaviour
                 dashpos = raycastHit2D.point;
             }
 
-            rigidbody2D.MovePosition(dashpos);
+            GetComponent<Rigidbody2D>().MovePosition(dashpos);
             isDashButtonDown = false;
         }
 

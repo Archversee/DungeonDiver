@@ -36,7 +36,10 @@ public class Health : MonoBehaviour
     {
 
         currhealth += healamt;
-        Mathf.Clamp(currhealth, 0, maxhealth);
+        if (currhealth > maxhealth)
+        {
+            currhealth = maxhealth;
+        }
         float currhealthpercent = currhealth / maxhealth;
         GetComponent<HealthBar>().HandleHealthChanged(currhealthpercent);
     }

@@ -153,7 +153,7 @@ MonoBehaviour:
   ArrowPrefab: {fileID: 7829279364066829709, guid: 2e943ca99b3db134b9e5114fa1661cc0, type: 3}
   speed: 3
   idletime: 0
-  attackrange: 1.5
+  attackrange: 0.2
   attackdamage: 20
   attackcooldown: 2
   critrate: 10
@@ -164,7 +164,9 @@ MonoBehaviour:
   Coins: 0
   CollidingwithLava: 0
   CollidingwithMud: 0
+  CollidingwithFountain: 0
   CurrencyValue: {fileID: 0}
+  PlayerStats: {fileID: 0}
   ShopUI: {fileID: 0}
 --- !u!50 &8646463704980384584
 Rigidbody2D:

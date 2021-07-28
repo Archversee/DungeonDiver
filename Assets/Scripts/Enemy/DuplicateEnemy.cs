@@ -56,7 +56,7 @@ public class DuplicateEnemy : MonoBehaviour
 
         startpos = transform.position;
         roampos = GetRoamingpos();
-        state = State.Roaming;
+        state = State.Idle;
         sprite = GetComponent<SpriteRenderer>();
         defaultspeed = agent.speed;
         mudmovespeed = agent.speed * 0.5f;
@@ -129,8 +129,8 @@ public class DuplicateEnemy : MonoBehaviour
                 FindTarget(playerdir);
                 break;
             case State.Idle:
-                FindTarget(playerdir);
                 animator.SetBool("Walking", false);
+                FindTarget(playerdir);
                 break;
             case State.Chase:
                 agent.SetDestination(player.position);
@@ -165,7 +165,7 @@ public class DuplicateEnemy : MonoBehaviour
                 agent.SetDestination(startpos);
                 if (Vector3.Distance(transform.position, startpos) < ReachedposDist2)
                 {
-                    state = State.Roaming;
+                    state = State.Idle;
                 }
                 break;
         }

@@ -53,7 +53,7 @@ public class RangedEnemyAI : MonoBehaviour
 
         startpos = transform.position;
         roampos = GetRoamingpos();
-        state = State.Roaming;
+        state = State.Idle;
         sprite = GetComponent<SpriteRenderer>();
         defaultspeed = agent.speed;
         mudmovespeed = agent.speed * 0.5f;
@@ -139,7 +139,7 @@ public class RangedEnemyAI : MonoBehaviour
                 agent.SetDestination(startpos);
                 if (Vector3.Distance(transform.position, startpos) < ReachedposDist2)
                 {
-                    state = State.Roaming;
+                    state = State.Idle;
                 }
                 break;
         }

@@ -20,21 +20,30 @@ public class Arrow : MonoBehaviour
     {
         if (other.CompareTag("Enemy"))
         {
-            float normaldmg = player.GetComponent<playerMovement>().attackdamage;
-            bool isCrit = UnityEngine.Random.Range(0, 100) < player.GetComponent<playerMovement>().critrate;
-            if (isCrit)
+            if (other.name == "DodgeEnemy(Clone)")
             {
-                player.GetComponent<playerMovement>().attackdamage *= player.GetComponent<playerMovement>().critMultiplier;
+                Transform damagePopupTransform = Instantiate(DamagePopup, other.transform.position, Quaternion.identity);
+                DamagePopup damagePopup = damagePopupTransform.GetComponent<DamagePopup>();
+                damagePopup.TextSetup("Dodged!");
             }
-            other.GetComponent<Health>().DealDmg(player.GetComponent<playerMovement>().attackdamage);
-            Transform damagePopupTransform = Instantiate(DamagePopup, other.transform.position, Quaternion.identity);
-            DamagePopup damagePopup = damagePopupTransform.GetComponent<DamagePopup>();
-            damagePopup.Setup(player.GetComponent<playerMovement>().attackdamage, isCrit, false);
-            if (isCrit)
+            else
             {
-                player.GetComponent<playerMovement>().attackdamage = normaldmg;
+                float dmg = player.GetComponent<playerMovement>().attackdamage * 1.5f; //1.5 multilplier for arrow attack as slower attackspeed
+                bool isCrit = UnityEngine.Random.Range(0, 100) < player.GetComponent<playerMovement>().critrate; //check if crit
+                if (isCrit)
+                {
+                    dmg *= player.GetComponent<playerMovement>().critMultiplier;
+                }
+                if(player.GetComponent<playerMovement>().timestwodamage)
+                {
+                    dmg *= 2;
+                }
+                other.GetComponent<Health>().DealDmg(dmg);
+                Transform damagePopupTransform = Instantiate(DamagePopup, other.transform.position, Quaternion.identity);
+                DamagePopup damagePopup = damagePopupTransform.GetComponent<DamagePopup>();
+                damagePopup.Setup(dmg, isCrit, false);
+                //Destroy(gameObject);
             }
-            Destroy(gameObject);
         }
         else if (other.CompareTag("Wall"))
         {

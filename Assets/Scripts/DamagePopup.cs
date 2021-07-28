@@ -42,6 +42,20 @@ public class DamagePopup : MonoBehaviour
         movevec = new Vector3(0.7f, 1) * 8f;
     }
 
+    public void TextSetup(string text)
+    {
+        textMeshPro.SetText(text);
+
+        textMeshPro.fontSize = 3f;
+        color = Color.white;
+
+        textMeshPro.color = color;
+        lifetime = 2f;
+        lifetime = LIFETIME_MAX;
+
+        movevec = new Vector3(0.7f, 1) * 8f;
+    }
+
     public void HealSetup(float healAmt)
     {
         textMeshPro.SetText(healAmt.ToString());

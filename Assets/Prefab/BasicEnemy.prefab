@@ -114,9 +114,9 @@ GameObject:
   - component: {fileID: -3147238103445942086}
   - component: {fileID: -5995026798694429017}
   - component: {fileID: 4302591733613805628}
-  - component: {fileID: 7912286306914768238}
   - component: {fileID: 7420434522058697591}
   - component: {fileID: 4295263398171603875}
+  - component: {fileID: 622210694543917931}
   m_Layer: 0
   m_Name: BasicEnemy
   m_TagString: Enemy
@@ -132,8 +132,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3962216663329164565}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.2628, y: 0.0964, z: 0}
-  m_LocalScale: {x: 2.087861, y: 1.9788607, z: 5}
+  m_LocalPosition: {x: 0.26514, y: 0.1236, z: 0}
+  m_LocalScale: {x: 1.50326, y: 1.4247798, z: 3.6000001}
   m_Children:
   - {fileID: 2621022101107377541}
   m_Father: {fileID: 0}
@@ -276,27 +276,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   foregroundImage: {fileID: 7626708756399161006}
   updateSpeedSeconds: 0.5
---- !u!50 &7912286306914768238
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3962216663329164565}
-  m_BodyType: 1
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0
-  m_GravityScale: 0
-  m_Material: {fileID: 0}
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 4
 --- !u!61 &7420434522058697591
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -342,6 +321,27 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!50 &622210694543917931
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3962216663329164565}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 1
+  m_Mass: 0.9
+  m_LinearDrag: 0
+  m_AngularDrag: 0
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_Interpolate: 1
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 4
 --- !u!1001 &4934533501115305623
 PrefabInstance:
   m_ObjectHideFlags: 0

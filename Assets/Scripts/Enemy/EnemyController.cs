@@ -37,6 +37,7 @@ public class EnemyController : MonoBehaviour
 
         istodestroy = false;
         killedbyplayer = false;
+
     }
 
     // Update is called once per frame

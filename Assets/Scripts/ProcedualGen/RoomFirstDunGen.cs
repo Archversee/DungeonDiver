@@ -29,8 +29,13 @@ public class RoomFirstDunGen : RandomWalkGen
     private GameObject RangedEnemy;
     [SerializeField]
     private GameObject DuplicateEnemy;
+    [SerializeField]
+    private GameObject GoblinEnemy;
     //Consumables
     public GameObject HealthPot;
+    public GameObject DamagePot;
+    public GameObject DodgePot;
+    public GameObject ArrowPot;
     public GameObject TreasureChest;
     public GameObject HealingFountain;
 
@@ -49,13 +54,13 @@ public class RoomFirstDunGen : RandomWalkGen
     {
         int useddungeonWidth = dungeonWidth + gameController.GetComponent<GameController>().levelCount; //scaling up with lavel count
         int usedungeonHeight = dungeonHeight + gameController.GetComponent<GameController>().levelCount;
-        if(useddungeonWidth > 80)
+        if(useddungeonWidth > 100)
         {
-            useddungeonWidth = 80;
+            useddungeonWidth = 100;
         }
-        if (usedungeonHeight > 80)
+        if (usedungeonHeight > 100)
         {
-            usedungeonHeight = 80;
+            usedungeonHeight = 100;
         }
         var roomList = ProcedualGenAlgo.BinarySpacePartitioning(new BoundsInt((Vector3Int)startpos, new Vector3Int(useddungeonWidth, usedungeonHeight, 0)), minRoomWidth, minRoomHeight);
 
@@ -104,7 +109,11 @@ public class RoomFirstDunGen : RandomWalkGen
         foreach (var Pos in enemiestoSpawn)
         {
             int enemytospawn = 0;
-            if (gameController.GetComponent<GameController>().levelCount > 5)
+            if (gameController.GetComponent<GameController>().levelCount > 7)
+            {
+                enemytospawn = Random.Range(0, 6);
+            }
+            else if (gameController.GetComponent<GameController>().levelCount > 5)
             {
                 enemytospawn = Random.Range(0, 5);
             }
@@ -114,21 +123,32 @@ public class RoomFirstDunGen : RandomWalkGen
             }
             if (enemytospawn == 1) //mix all
             {
-                float randnum = Random.Range(0, 1);
-                if (randnum <= 0.3f)
+                int randnum = Random.Range(0, 100);
+                if (randnum <= 25)
                 {
                     Instantiate(BasicEnemy, new Vector3(Pos.x + offset, Pos.y + offset, 0), Quaternion.identity);
                 }
-                else if (randnum < 0.6f && randnum >= 0.3f)
+                else if (randnum < 50 && randnum >= 25)
                 {
                     Instantiate(RangedEnemy, new Vector3(Pos.x + offset, Pos.y + offset, 0), Quaternion.identity);
                 }
-                else
+                else if(randnum < 75 && randnum >= 50)
                 {
                     if (gameController.GetComponent<GameController>().levelCount > 5)
                     {
                         GameObject enemy = Instantiate(DuplicateEnemy, new Vector3(Pos.x + offset, Pos.y + offset, 0), Quaternion.identity);
                         enemy.GetComponent<DuplicateEnemy>().stage = 1;
+                    }
+                    else
+                    {
+                        Instantiate(BasicEnemy, new Vector3(Pos.x + offset, Pos.y + offset, 0), Quaternion.identity);
+                    }
+                }
+                else
+                {
+                    if (gameController.GetComponent<GameController>().levelCount > 7)
+                    {
+                        Instantiate(GoblinEnemy, new Vector3(Pos.x + offset, Pos.y + offset, 0), Quaternion.identity);
                     }
                     else
                     {
@@ -149,21 +169,52 @@ public class RoomFirstDunGen : RandomWalkGen
                 GameObject enemy = Instantiate(DuplicateEnemy, new Vector3(Pos.x + offset, Pos.y + offset, 0), Quaternion.identity);
                 enemy.GetComponent<DuplicateEnemy>().stage = 1;
             }
+            else if (enemytospawn == 5) // onyl mushroom
+            {
+                Instantiate(GoblinEnemy, new Vector3(Pos.x + offset, Pos.y + offset, 0), Quaternion.identity);
+            }
         }
     }
 
     private void SpawnConsumables(HashSet<Vector2Int> floor)
     {
-        int HealthCounterLimit = floor.Count / 140; //for each 140 tiles we allow 1 enemy to spawn
-        int ChestCounterLimit = floor.Count / 180; //for each 180 tiles we allow 1 enemy to spawn
+        int HealthCounterLimit = floor.Count / 80; //for each 80 tiles we allow 1 healthpotion to spawn
+        int DamageCounterLimit = floor.Count / 100; //for each 100 tiles we allow 1 damagepotion to spawn
+        int DodgeCounterLimit = floor.Count / 120; //for each 120 tiles we allow 1 dodgepotion to spawn
+        int ArrowCounterLimit = floor.Count / 140; //for each 140 tiles we allow 1 arrowpotion to spawn
+        int ChestCounterLimit = floor.Count / 140; //for each 140 tiles we allow 1 chest to spawn
 
         List<Vector2Int> HealthPotstoSpawn = floor.OrderBy(x => Guid.NewGuid()).Take(HealthCounterLimit).ToList();  //sort by random order,then take the number we need
+        List<Vector2Int> DamagePotstoSpawn = floor.OrderBy(x => Guid.NewGuid()).Take(DamageCounterLimit).ToList();  //sort by random order,then take the number we need
+        List<Vector2Int> DodgePotstoSpawn = floor.OrderBy(x => Guid.NewGuid()).Take(DodgeCounterLimit).ToList();  //sort by random order,then take the number we need
+        List<Vector2Int> ArrowPotstoSpawn = floor.OrderBy(x => Guid.NewGuid()).Take(ArrowCounterLimit).ToList();  //sort by random order,then take the number we need
         List<Vector2Int> ChesttoSpawn = floor.OrderBy(x => Guid.NewGuid()).Take(ChestCounterLimit).ToList();  //sort by random order,then take the number we need
         float offset = 0.5f;
 
         foreach (var Pos in HealthPotstoSpawn)
         {
             Instantiate(HealthPot, new Vector3(Pos.x + offset, Pos.y + offset, 0), Quaternion.identity);
+        }
+        if (gameController.GetComponent<GameController>().levelCount > 3) // spawn damage potions after lvl 3
+        {
+            foreach (var Pos in DamagePotstoSpawn)
+            {
+                Instantiate(DamagePot, new Vector3(Pos.x + offset, Pos.y + offset, 0), Quaternion.identity);
+            }
+        }
+        if (gameController.GetComponent<GameController>().levelCount > 9)// spawn dodge potions after lvl 9
+        {
+            foreach (var Pos in DodgePotstoSpawn)
+            {
+                Instantiate(DodgePot, new Vector3(Pos.x + offset, Pos.y + offset, 0), Quaternion.identity);
+            }
+        }
+        if (gameController.GetComponent<GameController>().levelCount > 12)// spawn arrow potions after lvl 12
+        {
+            foreach (var Pos in ArrowPotstoSpawn)
+            {
+                Instantiate(ArrowPot, new Vector3(Pos.x + offset, Pos.y + offset, 0), Quaternion.identity);
+            }
         }
         foreach (var Pos in ChesttoSpawn)
         {
@@ -224,23 +275,37 @@ public class RoomFirstDunGen : RandomWalkGen
     }
     private void CreateAesthetics(HashSet<Vector2Int> floor)
     {
-        HashSet<Vector2Int> bones = new HashSet<Vector2Int>();
-        int NumberB4nextBone = 0;
 
-        foreach (var floorpos in floor)  
+        HashSet<Vector2Int> bones = new HashSet<Vector2Int>();
+        HashSet<Vector2Int> torches = new HashSet<Vector2Int>();
+        int NumberB4nextBone = 0;
+        int NumberB4nextTorch = 0;
+
+        foreach (var floorpos in floor)
         {
             NumberB4nextBone++;
+            NumberB4nextTorch++;
             if (NumberB4nextBone > 50)
             {
                 int randnum = Random.Range(0, 10);
-                if(randnum > 5)
+                if (randnum > 5)
                 {
                     bones.Add(floorpos);
                     NumberB4nextBone = 0;
                 }
             }
+            if (NumberB4nextTorch > 100)
+            {
+                int randnum = Random.Range(0, 10);
+                if (randnum > 5)
+                {
+                    torches.Add(floorpos);
+                    NumberB4nextTorch = 0;
+                }
+            }
+            tileMapVisualizer.PaintBoneTiles(bones);
+            tileMapVisualizer.PaintTorchTiles(torches);
         }
-        tileMapVisualizer.PaintBoneTiles(bones);
     }
 
 
@@ -356,17 +421,28 @@ public class RoomFirstDunGen : RandomWalkGen
         return closest;
     }
 
+    IEnumerator SpawnEnemiesAfterTime(float time, HashSet<Vector2Int> temporaryfloor)
+    {
+        //Debug.Log("Waiting!");
+        yield return new WaitForSeconds(time);
+
+        SpawnEnemy(temporaryfloor);
+        // Debug.Log("Wait Over!");
+        temporaryfloor = null;
+    }
+
     private HashSet<Vector2Int> CreateSimpleRooms(List<BoundsInt> roomList)
     {
         HashSet<Vector2Int> floor = new HashSet<Vector2Int>();
-        HashSet<Vector2Int> tempfloor = new HashSet<Vector2Int>();
+        //HashSet<Vector2Int> tempfloor = new HashSet<Vector2Int>();
 
         int shoproomint = Random.Range(0, roomList.Count);
         //Debug.Log(shoproomint);
 
         foreach (var room in roomList)   //for each room
         {
-            tempfloor.Clear();
+            //tempfloor.Clear();
+            HashSet<Vector2Int> tempfloor = new HashSet<Vector2Int>();
             for (int col = offset; col < room.size.x - offset; col++) //offset so rooms dont connect
             {
                 for (int row = offset; row < room.size.y - offset; row++)
@@ -391,12 +467,12 @@ public class RoomFirstDunGen : RandomWalkGen
                         if (gameController.GetComponent<GameController>().levelCount > 6)
                         {
                             SpawnFountainRoom(room);
-                            SpawnEnemy(tempfloor);
+                            StartCoroutine(SpawnEnemiesAfterTime(0.4f, tempfloor));
                         }
                         else
                         {
                             SpawnMudRoom(tempfloor);
-                            SpawnEnemy(tempfloor);
+                            StartCoroutine(SpawnEnemiesAfterTime(0.4f, tempfloor));
                         }
                     }
                     else if (randnum >= 70 && randnum < 80) // 10% for treasure room (no enemies only chest)
@@ -412,20 +488,20 @@ public class RoomFirstDunGen : RandomWalkGen
                         else
                         {
                             SpawnMudRoom(tempfloor);
-                            SpawnEnemy(tempfloor);
+                            StartCoroutine(SpawnEnemiesAfterTime(0.4f, tempfloor));
                         }
                     }
                     else if (randnum >= 90) // 10% for Mud room (Mud slows player)
                     {
                         SpawnMudRoom(tempfloor);
-                        SpawnEnemy(tempfloor);
+                        StartCoroutine(SpawnEnemiesAfterTime(0.4f, tempfloor));
                     }
                     SpawnConsumables(tempfloor);
                 }
                 else //normal room
                 {
                     //navMeshSurfaces.UpdateNavMesh(navMeshSurfaces.navMeshData);
-                    SpawnEnemy(tempfloor);
+                    StartCoroutine(SpawnEnemiesAfterTime(0.4f, tempfloor));
                     SpawnConsumables(tempfloor);
                 }
             }

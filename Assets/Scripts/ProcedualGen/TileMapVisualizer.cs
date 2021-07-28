@@ -8,18 +8,36 @@ using Random = UnityEngine.Random;
 public class TileMapVisualizer : MonoBehaviour
 {
     [SerializeField]
-    private Tilemap floortilemap , walltilemap, portaltilemap , shoptilemap, bonestilemap, lavatilemap, mudtilemap;
+    private Tilemap floortilemap , walltilemap, portaltilemap , shoptilemap, bonestilemap, lavatilemap, mudtilemap, torchtilemap;
         
     [SerializeField]
-    private TileBase floortile , wallTop , portalTile, shopTile, bonesTile, bonesTile2, lavaTile , mudTile;
+    private TileBase wallTop , portalTile, shopTile, bonesTile, bonesTile2, lavaTile , mudTile, torchtile, torchTile2;
+    [SerializeField]
+    private TileBase[] floortile;
 
     public void PaintFloorTiles(IEnumerable<Vector2Int> floorpos)
     {
-        PaintTiles(floorpos, floortilemap, floortile);
+        PaintFloorTiles(floorpos, floortilemap, floortile);
     }
+
+    private void PaintFloorTiles(IEnumerable<Vector2Int> floorpos, Tilemap floortilemap, TileBase[] floortile)
+    {
+        int arraysize = floortile.Length;
+        foreach (var position in floorpos)
+        {
+            int randnum = Random.Range(0, arraysize);
+            PaintSingleTile(floortilemap, floortile[randnum], position);
+        }
+    }
+
     public void PaintBoneTiles(IEnumerable<Vector2Int> bonepos)
     {
         PaintMultipleTiles(bonepos, bonestilemap, bonesTile, bonesTile2);
+    }
+
+    public void PaintTorchTiles(IEnumerable<Vector2Int> torchpos)
+    {
+        PaintMultipleTiles(torchpos, torchtilemap, torchtile, torchTile2);
     }
 
     public void PaintLavaTiles(IEnumerable<Vector2Int> lavapos)
@@ -86,5 +104,6 @@ public class TileMapVisualizer : MonoBehaviour
         bonestilemap.ClearAllTiles();
         lavatilemap.ClearAllTiles();
         mudtilemap.ClearAllTiles();
+        torchtilemap.ClearAllTiles();
     }
 }

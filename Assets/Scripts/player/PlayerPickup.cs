@@ -21,7 +21,7 @@ public class PlayerPickup : MonoBehaviour
             {
                 GetComponent<playerMovement>().AddCurrency(1);
             }
-            if (other.name == "Diamond(Clone)")
+            else if (other.name == "Diamond(Clone)")
             {
                 GetComponent<playerMovement>().AddCurrency(10);
             }
@@ -36,7 +36,31 @@ public class PlayerPickup : MonoBehaviour
                 DamagePopup healPopup = healPopupTransform.GetComponent<DamagePopup>();
                 healPopup.HealSetup(50);
             }
-            if (other.name == "TreasureChest(Clone)")
+            else if(other.name == "DodgePotion(Clone)")
+            {
+                GetComponent<playerMovement>().dodgeeffect = true;
+                GetComponent<playerMovement>().dodgeeffecttimer = 10.0f;
+                Transform damagePopupTransform = Instantiate(DamagePopup, other.transform.position, Quaternion.identity);
+                DamagePopup damagePopup = damagePopupTransform.GetComponent<DamagePopup>();
+                damagePopup.TextSetup("Dodge Effect");
+            }
+            else if (other.name == "AttackPotion(Clone)")
+            {
+                GetComponent<playerMovement>().timestwodamage = true;
+                GetComponent<playerMovement>().timestwotimer = 10.0f;
+                Transform damagePopupTransform = Instantiate(DamagePopup, other.transform.position, Quaternion.identity);
+                DamagePopup damagePopup = damagePopupTransform.GetComponent<DamagePopup>();
+                damagePopup.TextSetup("2x Damage!");
+            }
+            else if (other.name == "ArrowPotion(Clone)")
+            {
+                GetComponent<playerMovement>().arroweffect = true;
+                GetComponent<playerMovement>().arroweffecttimer = 10.0f;
+                Transform damagePopupTransform = Instantiate(DamagePopup, other.transform.position, Quaternion.identity);
+                DamagePopup damagePopup = damagePopupTransform.GetComponent<DamagePopup>();
+                damagePopup.TextSetup("More Arrows!");
+            }
+            else if (other.name == "TreasureChest(Clone)")
             {
                 int randnum = Random.Range(0, 10);
                 if (randnum > 6)
@@ -62,6 +86,13 @@ public class PlayerPickup : MonoBehaviour
                 GetComponent<playerMovement>().CollidingwithMud = true;
             }
         }
+        else if (other.CompareTag("Environmentals"))
+        {
+            if (other.name == "HealingFountain(Clone)")
+            {
+                GetComponent<playerMovement>().CollidingwithFountain = true;
+            }
+        }
     }
 
     private void OnTriggerExit2D(Collider2D other)
@@ -75,6 +106,13 @@ public class PlayerPickup : MonoBehaviour
             if (other.name == "Mud")
             {
                 GetComponent<playerMovement>().CollidingwithMud = false;
+            }
+        }
+        else if (other.CompareTag("Environmentals"))
+        {
+            if (other.name == "HealingFountain(Clone)")
+            {
+                GetComponent<playerMovement>().CollidingwithFountain = false;
             }
         }
     }
