@@ -21,13 +21,20 @@ public class GameController : MonoBehaviour
 
     public Transform player;
 
+    public float LifestealArrowCounter = 0f;
+
     public float Score; //1
     public Text ScoreText;
     public int levelCount; //2
+    public int templevelCount; //2
     public Text levelText;
+    private bool enlargefinished;
+    private bool addedfinished = true;
 
     public Transform MenuUI;
     public Transform SaveScoreUI;
+
+    public AudioClip PortalSFX;
 
     // Start is called before the first frame update
     void Start()
@@ -53,6 +60,7 @@ public class GameController : MonoBehaviour
         {
             MenuUI.gameObject.SetActive(true);
         }
+        LifestealArrowCounter = 0f;
     }
     void doubleUpdateNavMesh()
     {
@@ -60,10 +68,40 @@ public class GameController : MonoBehaviour
         navMeshSurfaces.UpdateNavMesh(navMeshSurfaces.navMeshData);
     }
 
+    void addlevelcount()
+    {
+        templevelCount++;
+        levelText.fontSize++;
+        if (levelText.fontSize > 40)
+        {
+            levelText.fontSize = 40;
+        }
+        addedfinished = true;
+    }
+
     public void FixedUpdate()
     {
         ScoreText.text = "Score: " + Score.ToString();
-        levelText.text = "Level: " + levelCount.ToString();
+        if (templevelCount <= levelCount)
+        {
+            levelText.text = templevelCount.ToString();
+            if (addedfinished)
+            {
+                Invoke("addlevelcount", 0.08f);
+                addedfinished = false;
+            }
+        }
+        if (templevelCount == levelCount)
+        {
+            enlargefinished = true;
+        }
+        if (enlargefinished)
+        {
+            if (levelText.fontSize > 20)
+            {
+                levelText.fontSize--;
+            }
+        }
     }
 
     private void Update()
@@ -78,7 +116,7 @@ public class GameController : MonoBehaviour
 
     public void ChangeSceneLoseScreen()
     {
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene(2);
     }
 
     public void NewMap()
@@ -108,13 +146,14 @@ public class GameController : MonoBehaviour
         player.position = temppos;
 
         //auto save every new level
-        SaveSystem.SavePlayer(player.GetComponent<playerMovement>(), this);
+        SaveSystem.SavePlayer(player, this);
+        templevelCount = 0;
+        enlargefinished = false;
     }
 
     public void LoadPlayer()
     {
         PlayerData data = SaveSystem.LoadPlayer();
-        Score = data.score;
         levelCount = data.levelcount - 1;
 
         player.GetComponent<playerMovement>().speed = data.speed;
@@ -124,7 +163,11 @@ public class GameController : MonoBehaviour
         player.GetComponent<playerMovement>().critrate = data.critrate;
         player.GetComponent<playerMovement>().critMultiplier = data.critMultiplier;
         player.GetComponent<playerMovement>().Coins = data.Coins;
+        player.GetComponent<Health>().currhealth = data.currhealth;
+        player.GetComponent<Health>().maxhealth = data.maxhealth;
+        player.GetComponent<playerMovement>().TakeDamage(0);
         NewMap();
+        Score = data.score;
         MenuUI.gameObject.SetActive(false);
         player.GetComponent<playerMovement>().UpdateCurrency();
     }
@@ -132,6 +175,6 @@ public class GameController : MonoBehaviour
     public void closeLoadMenu()
     {
         MenuUI.gameObject.SetActive(false);
-        SaveSystem.SavePlayer(player.GetComponent<playerMovement>(), this);
+        SaveSystem.SavePlayer(player, this);
     }
 }

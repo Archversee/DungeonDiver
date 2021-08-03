@@ -145,3 +145,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DamagePopup: {fileID: 2370460031970902256, guid: f560e3007491b7d4db31e654ddf91e13, type: 3}
+  arrowhitSFX: {fileID: 8300000, guid: f41eda08bf3704546a4242f6a1890223, type: 3}
+  CrithitSFX: {fileID: 8300000, guid: 321ca46cf45629f48820146d296896f6, type: 3}
+  DodgeSFX: {fileID: 8300000, guid: 35403603b7999c54a8d1fc072823477f, type: 3}

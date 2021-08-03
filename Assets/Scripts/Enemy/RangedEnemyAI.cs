@@ -26,6 +26,8 @@ public class RangedEnemyAI : MonoBehaviour
     float mudmovespeed;
     float defaultspeed;
 
+    public AudioClip attackSFX;
+
     private GameObject gameController;
 
     private Animator animator;
@@ -155,6 +157,7 @@ public class RangedEnemyAI : MonoBehaviour
         arrow.transform.Rotate(0.0f, 0.0f, Mathf.Atan2(playerdir.y, playerdir.x) * Mathf.Rad2Deg);
         arrow.GetComponent<EnemyArrow>().damage = Attackdmg;
         //animator.SetTrigger("Attacking");
+        AudioUtility.CreateSFX(attackSFX, transform.position, AudioUtility.AudioGroups.Enemy, 10.0f);
 
     }
 

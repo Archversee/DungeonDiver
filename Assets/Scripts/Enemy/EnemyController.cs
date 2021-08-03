@@ -92,8 +92,8 @@ public class EnemyController : MonoBehaviour
     {
         if (killedbyplayer)
         {
-            float randnum = Random.Range(0f, 10f);
-            if (randnum > 1)
+            float randnum = Random.Range(0f, 1.0f);
+            if (randnum > 0.1f)
             {
                 Instantiate(coinLootDrop, transform.position, Quaternion.identity);
             }
@@ -101,6 +101,7 @@ public class EnemyController : MonoBehaviour
             {
                 Instantiate(diamondLootDrop, transform.position, Quaternion.identity);
             }
+            gameController.GetComponent<GameController>().LifestealArrowCounter++;
         }
 
         Destroy(gameObject);

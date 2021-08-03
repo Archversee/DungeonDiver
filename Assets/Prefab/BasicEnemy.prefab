@@ -228,6 +228,7 @@ MonoBehaviour:
   Attackrange: 2
   Attackdmg: 10
   AttackDelay: 3
+  attackSFX: {fileID: 8300000, guid: d52d970d3ea09f7449c3689d306d7a4e, type: 3}
 --- !u!114 &-3147238103445942086
 MonoBehaviour:
   m_ObjectHideFlags: 0

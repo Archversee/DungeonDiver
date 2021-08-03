@@ -324,6 +324,7 @@ MonoBehaviour:
   Attackrange: 5
   Attackdmg: 15
   AttackDelay: 4
+  attackSFX: {fileID: 8300000, guid: 06082005fb3da50449602cfcfa787cae, type: 3}
 --- !u!95 &-8275919672247080253
 Animator:
   serializedVersion: 3

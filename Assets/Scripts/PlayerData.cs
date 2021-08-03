@@ -16,17 +16,23 @@ public class PlayerData
     public float critMultiplier;
     public int Coins;
 
-    public PlayerData(playerMovement player, GameController gameController)
+    public float currhealth;
+    public float maxhealth;
+
+    public PlayerData(Transform player, GameController gameController)
     {
         score = gameController.Score;
         levelcount = gameController.levelCount;
 
-        speed = player.speed;
-        attackrange = player.attackrange;
-        attackdamage = player.attackdamage;
-        attackcooldown = player.attackcooldown;
-        critrate = player.critrate;
-        critMultiplier = player.critMultiplier;
-        Coins = player.Coins;
+        speed = player.GetComponent<playerMovement>().speed;
+        attackrange = player.GetComponent<playerMovement>().attackrange;
+        attackdamage = player.GetComponent<playerMovement>().attackdamage;
+        attackcooldown = player.GetComponent<playerMovement>().attackcooldown;
+        critrate = player.GetComponent<playerMovement>().critrate;
+        critMultiplier = player.GetComponent<playerMovement>().critMultiplier;
+        Coins = player.GetComponent<playerMovement>().Coins;
+
+        currhealth = player.GetComponent<Health>().currhealth;
+        maxhealth = player.GetComponent<Health>().maxhealth;
     }
 }

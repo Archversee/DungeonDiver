@@ -29,6 +29,8 @@ public class DuplicateEnemy : MonoBehaviour
     [SerializeField]
     public float stage;
 
+    public AudioClip attackSFX;
+
     private GameObject gameController;
 
     private Animator animator;
@@ -177,6 +179,7 @@ public class DuplicateEnemy : MonoBehaviour
         player.GetComponent<playerMovement>().TakeDamage(Attackdmg);
 
         animator.SetTrigger("Attacking");
+        AudioUtility.CreateSFX(attackSFX, transform.position, AudioUtility.AudioGroups.Enemy, 10.0f);
     }
 
     public void DuplicateSelf()
@@ -190,6 +193,7 @@ public class DuplicateEnemy : MonoBehaviour
                 GameObject enemy = Instantiate(DuplicateEnemyAI, new Vector3(transform.position.x + offset, transform.position.y + offset, 0), Quaternion.identity);
                 enemy.GetComponent<DuplicateEnemy>().stage = temp;
                 offset += 0.1f;
+                enemy.GetComponent<Health>().Heal(0.0f);
             }
         }
     }

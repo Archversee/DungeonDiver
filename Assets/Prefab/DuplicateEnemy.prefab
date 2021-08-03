@@ -245,6 +245,7 @@ MonoBehaviour:
   Attackdmg: 25
   AttackDelay: 3
   stage: 0
+  attackSFX: {fileID: 8300000, guid: b30c7de8d999b6a46a871e9ff7ba8eb7, type: 3}
 --- !u!1 &2948247207821403754
 GameObject:
   m_ObjectHideFlags: 0

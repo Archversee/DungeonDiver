@@ -16,6 +16,9 @@ public class UIShop : MonoBehaviour
     private Transform critrateshoptemplate;
     private Transform movspeedshoptemplate;
 
+    public AudioClip NomoneySFX;
+    public AudioClip PurchasedSFX;
+
     private List<Transform> shopTemplates = new List<Transform>();
 
 
@@ -65,6 +68,11 @@ public class UIShop : MonoBehaviour
                     PurchaseUpgrade(shoplist[i]);
                     UpdateShop();
                     player.UpdateCurrency();
+                    AudioUtility.CreateSFX(PurchasedSFX, transform.position, AudioUtility.AudioGroups.Pickups, 0.0f);
+                }
+                else
+                {
+                    AudioUtility.CreateSFX(NomoneySFX, transform.position, AudioUtility.AudioGroups.Pickups, 0.0f);
                 }
             }
         }

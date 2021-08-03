@@ -34,7 +34,6 @@ public class Health : MonoBehaviour
 
     public void Heal(float healamt)
     {
-
         currhealth += healamt;
         if (currhealth > maxhealth)
         {

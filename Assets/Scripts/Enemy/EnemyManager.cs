@@ -54,19 +54,22 @@ public sealed class EnemyManager
         {
             EnemyController TempEnemy = Enemies[i];
 
-            if(Vector3.Distance(pos, TempEnemy.transform.position) > range)
+            if (TempEnemy != null)
             {
-                continue;
-            }
-            if(closestEnemy == null)
-            {
-                closestEnemy = TempEnemy;
-            }
-            else
-            {
-                if(Vector3.Distance(pos, TempEnemy.transform.position) < Vector3.Distance(pos, closestEnemy.transform.position))
+                if (Vector3.Distance(pos, TempEnemy.transform.position) > range)
+                {
+                    continue;
+                }
+                if (closestEnemy == null)
                 {
                     closestEnemy = TempEnemy;
+                }
+                else
+                {
+                    if (Vector3.Distance(pos, TempEnemy.transform.position) < Vector3.Distance(pos, closestEnemy.transform.position))
+                    {
+                        closestEnemy = TempEnemy;
+                    }
                 }
             }
 

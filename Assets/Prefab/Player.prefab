@@ -151,6 +151,7 @@ MonoBehaviour:
     m_Bits: 0
   DamagePopup: {fileID: 2370460031970902256, guid: f560e3007491b7d4db31e654ddf91e13, type: 3}
   ArrowPrefab: {fileID: 7829279364066829709, guid: 2e943ca99b3db134b9e5114fa1661cc0, type: 3}
+  LifeStealArrowPrefab: {fileID: 6879311401050286122, guid: 04273c734f97d8c448ddc82c4e0964de, type: 3}
   speed: 3
   idletime: 0
   attackrange: 0.2
@@ -161,13 +162,46 @@ MonoBehaviour:
   gameController: {fileID: 0}
   dashrange: 0
   dashcooldown: 0
+  isdashcooldown: 0
+  isattackcooldown: 0
   Coins: 0
   CollidingwithLava: 0
   CollidingwithMud: 0
   CollidingwithFountain: 0
+  timestwodamage: 0
+  dodgeeffect: 0
+  arroweffect: 0
+  timestwotimer: 0
+  dodgeeffecttimer: 0
+  arroweffecttimer: 0
   CurrencyValue: {fileID: 0}
   PlayerStats: {fileID: 0}
   ShopUI: {fileID: 0}
+  footstepSFX: {fileID: 0}
+  MudfootstepSFX: {fileID: 0}
+  LavafootstepSFX: {fileID: 0}
+  dashSFX: {fileID: 0}
+  SwordSFX: {fileID: 0}
+  Sword2SFX: {fileID: 0}
+  BowSFX: {fileID: 0}
+  arrowSFX: {fileID: 0}
+  CrithitSFX: {fileID: 0}
+  EffectlostSFX: {fileID: 0}
+  PortalSFX: {fileID: 0}
+  DodgeSFX: {fileID: 0}
+  DamagedSFX: {fileID: 0}
+  footstepSFXFrequency: 1
+  dashImageCooldown: {fileID: 0}
+  dashTextCooldown: {fileID: 0}
+  swordImageCooldown: {fileID: 0}
+  swordTextCooldown: {fileID: 0}
+  bowImageCooldown: {fileID: 0}
+  bowTextCooldown: {fileID: 0}
+  mudicon: {fileID: 0}
+  burnImage: {fileID: 0}
+  dmgUPImage: {fileID: 0}
+  dodgeImage: {fileID: 0}
+  arrowImage: {fileID: 0}
 --- !u!50 &8646463704980384584
 Rigidbody2D:
   serializedVersion: 4
@@ -232,3 +266,9 @@ MonoBehaviour:
   OpenedFullTreasureChest: {fileID: 6537843316421574175, guid: 1825a7d5edee11148b6b0ed76f972e60, type: 3}
   OpenedEmptyTreasureChest: {fileID: 6537843316421574175, guid: 11c30715fa849b74c97f80d480e940ac, type: 3}
   DamagePopup: {fileID: 2370460031970902256, guid: f560e3007491b7d4db31e654ddf91e13, type: 3}
+  potionSFX: {fileID: 0}
+  coinSFX: {fileID: 0}
+  diamondSFX: {fileID: 0}
+  emptychestSFX: {fileID: 0}
+  fullchestSFX: {fileID: 0}
+  fountainSFX: {fileID: 0}

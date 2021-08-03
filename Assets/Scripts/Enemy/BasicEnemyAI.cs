@@ -24,6 +24,8 @@ public class BasicEnemyAI : MonoBehaviour
     float mudmovespeed;
     float defaultspeed;
 
+    public AudioClip attackSFX;
+
     private GameObject gameController;
 
     private Animator animator;
@@ -53,8 +55,8 @@ public class BasicEnemyAI : MonoBehaviour
         roampos = GetRoamingpos();
         state = State.Idle;
         sprite = GetComponent<SpriteRenderer>();
-        defaultspeed = agent.speed;
-        mudmovespeed = agent.speed * 0.5f;
+        defaultspeed = agent.speed * 0.75f;
+        mudmovespeed = defaultspeed * 0.5f;
 
         animator = GetComponent<Animator>();
 
@@ -96,11 +98,14 @@ public class BasicEnemyAI : MonoBehaviour
                 FindTarget(playerdir);
                 break;
             case State.Idle:
-                SetAnimatorMovement(playerdir);
+                animator.SetBool("IsWalkingR", false);
+                animator.SetBool("IsWalkingL", false);
+                //SetAnimatorMovement(playerdir);
                 FindTarget(playerdir);
                 break;
             case State.Chase:
                 agent.SetDestination(player.position);
+                SetAnimatorMovement(playerdir);
                 if (Vector3.Distance(transform.position, player.position) < Attackrange)
                 {
                     //if player wihtin attack range
@@ -129,7 +134,9 @@ public class BasicEnemyAI : MonoBehaviour
             case State.ReturnToStart:
                 float ReachedposDist2 = 2f;
                 agent.SetDestination(startpos);
-                if(Vector3.Distance(transform.position, startpos) < ReachedposDist2)
+                Vector3 startposide = (startpos - transform.position).normalized;
+                SetAnimatorMovement(startposide);
+                if (Vector3.Distance(transform.position, startpos) < ReachedposDist2)
                 {
                     state = State.Idle;
                 }
@@ -165,6 +172,7 @@ public class BasicEnemyAI : MonoBehaviour
         {
             animator.SetTrigger("LAttacking");
         }
+        AudioUtility.CreateSFX(attackSFX, transform.position, AudioUtility.AudioGroups.Enemy, 10.0f);
     }
 
     private Vector3 GetRoamingpos()
@@ -186,7 +194,7 @@ public class BasicEnemyAI : MonoBehaviour
             //if player wihtin target range
             state = State.Chase;
 
-            SetAnimatorMovement(dir);
+            //SetAnimatorMovement(dir);
         }
     }
 }
