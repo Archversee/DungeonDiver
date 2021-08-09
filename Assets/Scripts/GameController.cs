@@ -25,6 +25,8 @@ public class GameController : MonoBehaviour
 
     public float Score; //1
     public Text ScoreText;
+    public Transform UnlockInfoText;
+    private float unlockinfocount;
     public int levelCount; //2
     public int templevelCount; //2
     public Text levelText;
@@ -102,6 +104,10 @@ public class GameController : MonoBehaviour
                 levelText.fontSize--;
             }
         }
+        if (Time.time > unlockinfocount + 10.0f)
+        {
+            UnlockInfoText.gameObject.SetActive(false);
+        }
     }
 
     private void Update()
@@ -149,6 +155,41 @@ public class GameController : MonoBehaviour
         SaveSystem.SavePlayer(player, this);
         templevelCount = 0;
         enlargefinished = false;
+
+        unlockinfocount = Time.time;
+        UnlockInfoText.gameObject.SetActive(true);
+        if (levelCount == 4)
+        {
+            UnlockInfoText.GetComponent<Text>().text = "Unlocked : Damage Potion & Lava Room";
+        }
+        else if (levelCount == 6)
+        {
+            UnlockInfoText.GetComponent<Text>().text = "Unlocked : Mushroom Enemy";
+        }
+        else if (levelCount == 7)
+        {
+            UnlockInfoText.GetComponent<Text>().text = "Unlocked : Fountain Room";
+        }
+        else if (levelCount == 8)
+        {
+            UnlockInfoText.GetComponent<Text>().text = "Unlocked :Goblin Enemy";
+        }
+        else if (levelCount == 9)
+        {
+            UnlockInfoText.GetComponent<Text>().text = "Unlocked :Turret Room";
+        }
+        else if (levelCount == 10)
+        {
+            UnlockInfoText.GetComponent<Text>().text = "Unlocked : Dodge Potion";
+        }
+        else if (levelCount == 13)
+        {
+            UnlockInfoText.GetComponent<Text>().text = "Unlocked : Arrow Potion";
+        }
+        else
+        {
+            UnlockInfoText.gameObject.SetActive(false);
+        }
     }
 
     public void LoadPlayer()

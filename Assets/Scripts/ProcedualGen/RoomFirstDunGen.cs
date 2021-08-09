@@ -38,6 +38,7 @@ public class RoomFirstDunGen : RandomWalkGen
     public GameObject ArrowPot;
     public GameObject TreasureChest;
     public GameObject HealingFountain;
+    public GameObject Projectileshooter;
 
     public GameObject gameController;
 
@@ -460,9 +461,22 @@ public class RoomFirstDunGen : RandomWalkGen
             else
             {
                 int randnum = Random.Range(0, 100);
-                if (randnum >= 60) //30% chance for special room
+                if (randnum >= 50) //50% chance for special room
                 {
-                    if (randnum >= 60 && randnum < 70) // 10% for HealingFountain room (have enemies and healing fountain)
+                    if (randnum >= 50 && randnum < 60) // 10% for HealingFountain room (have enemies and healing fountain)
+                    {
+                        if (gameController.GetComponent<GameController>().levelCount > 9)
+                        {
+                            SpawnProjectileRoom(room);
+                            StartCoroutine(SpawnEnemiesAfterTime(0.4f, tempfloor));
+                        }
+                        else
+                        {
+                            SpawnLavaRoom(tempfloor);
+                            StartCoroutine(SpawnEnemiesAfterTime(0.4f, tempfloor));
+                        }
+                    }
+                    else if (randnum >= 60 && randnum < 70) // 10% for HealingFountain room (have enemies and healing fountain)
                     {
                         if (gameController.GetComponent<GameController>().levelCount > 6)
                         {
@@ -528,6 +542,13 @@ public class RoomFirstDunGen : RandomWalkGen
         float offset = 0.5f;
 
         Instantiate(HealingFountain, new Vector3(room.center.x + offset, room.center.y + offset, 0), Quaternion.identity);
+    }
+
+    private void SpawnProjectileRoom(BoundsInt room)
+    {
+        float offset = 0.5f;
+
+        Instantiate(Projectileshooter, new Vector3(room.center.x + offset, room.center.y + offset, 0), Quaternion.identity);
     }
 
     private void SpawnLavaRoom(HashSet<Vector2Int> floor)
